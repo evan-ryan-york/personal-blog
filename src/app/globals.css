@@ -1,26 +1,279 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: #333333;
+  --color-paper: #fafafa;
+  --color-paper-warm: #f0f0f0;
+  --color-muted: #888888;
+  --color-accent: #555555;
+  --color-accent-light: #777777;
+  --color-secondary: #666666;
+  --font-display: "Bitter", serif;
+  --font-body: "Bitter", serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --lp-deep: #1e1812;
+  --lp-paper: #faf6f2;
+  --lp-accent: #b44d2a;
+  --lp-muted: #8c7e72;
+  --lp-divider: #d6ccc0;
+  --lp-ink: #27211a;
+  --lp-secondary: #4a7c59;
+  --lp-dark-heading: #f5f0ea;
+  --lp-dark-body: #c9bfb4;
+  --lp-dark-muted: #9e9285;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: white;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+.delay-7 { animation-delay: 0.7s; }
+.delay-8 { animation-delay: 0.8s; }
+
+/* Prose styles for MDX content */
+.prose-blog {
+  max-width: 68ch;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+}
+
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+  font-weight: 700;
+}
+
+.prose-blog h1 { font-size: 2.25rem; letter-spacing: -0.03em; }
+.prose-blog h2 { font-size: 1.75rem; }
+.prose-blog h3 { font-size: 1.375rem; }
+.prose-blog h4 { font-size: 1.125rem; }
+
+.prose-blog p {
+  margin-bottom: 1.5em;
+}
+
+.prose-blog a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s;
+}
+
+.prose-blog a:hover {
+  color: var(--color-accent-light);
+}
+
+.prose-blog blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1.5em;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+.prose-blog ul,
+.prose-blog ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose-blog li {
+  margin-bottom: 0.5em;
+}
+
+.prose-blog ul { list-style-type: disc; }
+.prose-blog ol { list-style-type: decimal; }
+
+.prose-blog code:not(pre code) {
+  background: var(--color-paper-warm);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.prose-blog pre {
+  background: #0a0a0a !important;
+  color: #e5e5e5;
+  border-radius: 8px;
+  padding: 1.25em 1.5em;
+  overflow-x: auto;
+  margin-bottom: 1.5em;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.prose-blog pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.prose-blog img {
+  border-radius: 8px;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.prose-blog hr {
+  border: none;
+  border-top: 1px solid var(--color-paper-warm);
+  margin: 3em 0;
+}
+
+.prose-blog strong {
+  font-weight: 700;
+}
+
+/* Heading anchor links */
+.prose-blog h1 a,
+.prose-blog h2 a,
+.prose-blog h3 a,
+.prose-blog h4 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose-blog h1 a:hover,
+.prose-blog h2 a:hover,
+.prose-blog h3 a:hover,
+.prose-blog h4 a:hover {
+  color: var(--color-accent);
+}
+
+/* rehype-pretty-code styles */
+[data-rehype-pretty-code-figure] pre {
+  background: #0a0a0a !important;
+}
+
+[data-rehype-pretty-code-figure] code {
+  display: grid;
+}
+
+[data-rehype-pretty-code-figure] [data-line] {
+  padding: 0 1.5em;
+}
+
+[data-highlighted-line] {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Living Product post styles */
+.living-product-prose {
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.125rem;
+  color: var(--lp-ink, #1a1a1a);
+  line-height: 1.7;
+}
+
+.living-product-prose h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  color: var(--lp-deep, #2c2520);
+}
+
+.living-product-prose h2 em {
+  font-style: italic;
+  color: var(--lp-accent, #c45d3e);
+}
+
+.living-product-prose p {
+  margin-bottom: 1.3rem;
+  font-weight: 300;
+  color: var(--lp-ink, #3d3832);
+}
+
+.living-product-prose p strong {
+  font-weight: 500;
+  color: var(--lp-ink, #1a1a1a);
+}
+
+.living-product-prose a {
+  color: var(--lp-accent, #c45d3e);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* Callout inner styles */
+.callout-content p {
+  color: var(--lp-dark-body, #c9c2b8) !important;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.callout-content p:last-child {
+  margin-bottom: 0;
+}
+
+.callout-content strong {
+  color: var(--lp-dark-heading, #f6f3ee) !important;
+  font-weight: 500;
 }
