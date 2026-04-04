@@ -33,7 +33,7 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
     ? posts.filter((post) =>
         post.frontmatter.tags.some((t) => selectedTags.has(t))
       )
-    : posts.slice(0, 1);
+    : posts;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -103,7 +103,7 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
                 className="mb-8 text-xs uppercase tracking-widest text-muted"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
-                {hasFilter ? "Results" : "Most Recent"}
+                {hasFilter ? "Results" : "Recent"}
               </h2>
 
               {filteredPosts.length === 0 ? (
