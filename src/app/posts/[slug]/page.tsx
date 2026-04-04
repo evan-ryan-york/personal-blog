@@ -28,6 +28,35 @@ import {
 import PostImage from "../../../../content/posts/the-living-product/components/PostImage";
 import Highlight from "../../../../content/posts/the-living-product/components/Highlight";
 
+// Progressive Agenda post imports
+import ProgressiveAgendaLayout from "../../../../content/posts/2028-progressive-agenda/layout";
+import PAScrollReveal from "../../../../content/posts/2028-progressive-agenda/components/ScrollReveal";
+import PASection from "../../../../content/posts/2028-progressive-agenda/components/Section";
+import PALead from "../../../../content/posts/2028-progressive-agenda/components/Lead";
+import PACallout from "../../../../content/posts/2028-progressive-agenda/components/Callout";
+import PADivider from "../../../../content/posts/2028-progressive-agenda/components/PostDivider";
+import PAHighlight from "../../../../content/posts/2028-progressive-agenda/components/Highlight";
+import QuadrantChart from "../../../../content/posts/2028-progressive-agenda/components/QuadrantChart";
+import FootnoteRef from "../../../../content/posts/2028-progressive-agenda/components/FootnoteRef";
+import {
+  Footnotes,
+  Footnote,
+} from "../../../../content/posts/2028-progressive-agenda/components/Footnotes";
+import { PlatformSection } from "../../../../content/posts/2028-progressive-agenda/components/PlatformList";
+import {
+  StatRow,
+  Stat,
+} from "../../../../content/posts/2028-progressive-agenda/components/StatRow";
+import {
+  ThreeUp,
+  ColumnCard,
+} from "../../../../content/posts/2028-progressive-agenda/components/ThreeUp";
+import {
+  BulletList,
+  Bullet,
+} from "../../../../content/posts/2028-progressive-agenda/components/BulletList";
+import ScrollArt from "../../../../content/posts/2028-progressive-agenda/components/ScrollArt";
+
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
 
@@ -53,6 +82,26 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     PostImage,
     Highlight,
   },
+  "2028-progressive-agenda": {
+    ScrollReveal: PAScrollReveal,
+    Section: PASection,
+    Lead: PALead,
+    Callout: PACallout,
+    Divider: PADivider,
+    Highlight: PAHighlight,
+    QuadrantChart,
+    FootnoteRef,
+    Footnotes,
+    Footnote,
+    PlatformSection,
+    StatRow,
+    Stat,
+    ThreeUp,
+    ColumnCard,
+    BulletList,
+    Bullet,
+    ScrollArt,
+  },
 };
 
 // Map of slug -> custom layout
@@ -64,6 +113,7 @@ const postLayoutMap: Record<
   }>
 > = {
   "the-living-product": LivingProductLayout,
+  "2028-progressive-agenda": ProgressiveAgendaLayout,
 };
 
 export async function generateStaticParams() {

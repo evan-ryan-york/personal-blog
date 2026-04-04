@@ -33,6 +33,16 @@
   --lp-dark-heading: #f5f0ea;
   --lp-dark-body: #c9bfb4;
   --lp-dark-muted: #9e9285;
+
+  --pa-ink: #0f0f0f;
+  --pa-accent: #1e3a5f;
+  --pa-secondary: #b91c1c;
+  --pa-muted: #6b7280;
+  --pa-divider: #e5e7eb;
+  --pa-callout-bg: #f8fafc;
+  --pa-highlight-bg: #fafafa;
+  --pa-font-display: "Instrument Serif", Georgia, serif;
+  --pa-font-body: "Inter", system-ui, sans-serif;
 }
 
 ::selection {
@@ -276,4 +286,81 @@ body {
 .callout-content strong {
   color: var(--lp-dark-heading, #f6f3ee) !important;
   font-weight: 500;
+}
+
+/* Progressive Agenda post styles */
+.progressive-agenda-prose {
+  font-family: var(--pa-font-body, "Inter", system-ui, sans-serif);
+  font-size: 1.08rem;
+  color: var(--pa-ink, #1f2937);
+  line-height: 1.8;
+}
+
+.progressive-agenda-prose h2 {
+  font-family: var(--pa-font-display, "Instrument Serif", Georgia, serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  color: var(--pa-ink, #0f0f0f);
+  letter-spacing: -0.02em;
+}
+
+.progressive-agenda-prose h2 em {
+  font-style: italic;
+  color: var(--pa-secondary, #b91c1c);
+}
+
+.progressive-agenda-prose p {
+  margin-bottom: 1.4rem;
+  font-weight: 400;
+  color: var(--pa-ink, #374151);
+}
+
+.progressive-agenda-prose p strong {
+  font-weight: 600;
+  color: var(--pa-ink, #0f0f0f);
+}
+
+.progressive-agenda-prose a {
+  color: var(--pa-accent, #1e3a5f);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s;
+}
+
+.progressive-agenda-prose a:hover {
+  color: var(--pa-secondary, #b91c1c);
+}
+
+/* Progressive Agenda callout inner styles */
+.pa-callout-content p {
+  font-family: var(--pa-font-body, "Inter", system-ui, sans-serif);
+  color: var(--pa-ink, #374151) !important;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+.pa-callout-content p:last-child {
+  margin-bottom: 0;
+}
+
+.pa-callout-content strong {
+  color: var(--pa-accent, #1e3a5f) !important;
+  font-weight: 600;
+}
+
+/* Scroll art column — hide on small screens */
+@media (max-width: 900px) {
+  .pa-scroll-art-col {
+    display: none !important;
+  }
+}
+
+/* Progressive Agenda selection color */
+.pa-post ::selection {
+  background-color: var(--pa-accent, #1e3a5f);
+  color: #ffffff;
 }

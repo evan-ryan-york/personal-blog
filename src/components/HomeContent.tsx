@@ -183,8 +183,8 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
               game console. I was 5.
             </p>
             <p>
-              Same instinct, bigger VCRs. I built my first recording studio at
-              15. I talked a bankrupt landlord into giving me a building and
+              Same instinct, bigger VCRs. I built my first recording studio
+              at 15. I talked a bankrupt landlord into giving me a building and
               turned it into a rock and roll camp for kids. I created math
               software that put every teacher who used it into the top 5% of
               their district. I built a CS curriculum that went from 400 to
@@ -194,10 +194,15 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
               charge stopped protecting kids.
             </p>
             <p>
-              Now I&rsquo;m CPTO of Willow Education, and launching Clearwater
+              Now I&rsquo;m CPTO of{" "}
+              <a href="https://willowed.org" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">Willow Education</a>
+              , and launching{" "}
+              <a href="https://clearwaterafrica.com" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">Clearwater</a>{" "}
               in Accra, Ghana&nbsp;&mdash; where 3.6 million people don&rsquo;t
               have reliable water. In the cracks between those stones lives
-              politics, gardening, music, and fumbling my way through
+              politics, gardening,{" "}
+              <a href="https://soundcloud.com/ryan_york" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">music</a>
+              , and fumbling my way through
               parenthood.
             </p>
             <p>
