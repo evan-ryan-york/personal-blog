@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bitter, Fira_Code } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import { generateSiteMetadata } from "@/lib/seo";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -27,8 +28,6 @@ const fontVars = `${bitter.variable} ${bitterBody.variable} ${firaCode.variable}
 
 export const metadata: Metadata = generateSiteMetadata();
 
-const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,21 +35,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${fontVars} h-full antialiased`}>
-      <head>
-        {plausibleDomain && (
-          <script
-            defer
-            data-domain={plausibleDomain}
-            src="https://plausible.io/js/script.js"
-          />
-        )}
-      </head>
       <body
         className="flex min-h-full flex-col"
         style={{ fontFamily: "var(--font-body)" }}
       >
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
