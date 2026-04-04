@@ -280,6 +280,7 @@ export default function ProgressiveAgendaLayout({
             padding: "0 2rem 6rem",
             display: "flex",
             gap: "3rem",
+            justifyContent: "center",
           }}
         >
           {/* Prose column */}

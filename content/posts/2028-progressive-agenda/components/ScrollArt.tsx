@@ -404,23 +404,40 @@ export default function ScrollArt() {
     // headingPositions[i] tells us when section i starts in scroll space.
     // We interpolate between nodeYs based on where scrollProgress falls
     // between consecutive headingPositions.
-    // Find the highest section that has triggered and use its vizProgress
-    // to interpolate the line between that node and the previous one.
+    // Line position: continuously interpolated between node positions
+    // based on where scrollProgress falls between heading positions.
+    // Before first viz triggers: nothing. Once triggered, use vizProgress
+    // for initial growth, then headingPositions for smooth continuous movement.
     let lineEndY = 0;
-    let activeIdx = -1;
-    for (let i = sectionCount - 1; i >= 0; i--) {
-      if (vizProgresses[i] > 0) {
-        activeIdx = i;
-        break;
-      }
-    }
-    if (activeIdx >= 0) {
-      if (activeIdx === 0) {
-        // Growing from 0 to first node
-        lineEndY = vizProgresses[0] * nodeYs[0];
+    const firstTriggered = vizProgresses[0] > 0;
+
+    if (firstTriggered) {
+      // Find which segment we're in based on scroll position
+      if (scrollProgress >= headingPositions[sectionCount - 1]) {
+        // Past last heading
+        const lastPos = headingPositions[sectionCount - 1];
+        const t = Math.min(1, (scrollProgress - lastPos) / (1 - lastPos));
+        lineEndY = lerp(nodeYs[sectionCount - 1], topPad + usableH, t);
       } else {
-        // Previous nodes are fully reached; interpolate to current
-        lineEndY = lerp(nodeYs[activeIdx - 1], nodeYs[activeIdx], vizProgresses[activeIdx]);
+        let found = false;
+        for (let i = 1; i < sectionCount; i++) {
+          if (scrollProgress < headingPositions[i]) {
+            const prevPos = headingPositions[i - 1];
+            const range = headingPositions[i] - prevPos;
+            const t = range > 0 ? (scrollProgress - prevPos) / range : 0;
+            lineEndY = lerp(nodeYs[i - 1], nodeYs[i], Math.max(0, Math.min(1, t)));
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          lineEndY = nodeYs[0];
+        }
+      }
+
+      // For the very start, scale by first viz progress so it grows from 0
+      if (vizProgresses[0] < 1) {
+        lineEndY = Math.min(lineEndY, vizProgresses[0] * nodeYs[0]);
       }
     }
 
