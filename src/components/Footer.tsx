@@ -21,6 +21,15 @@ export default function Footer() {
             Writing about tech, product, politics, purpose, happiness, and
             education.
           </p>
+          <p className="mt-4 text-sm text-muted">
+            <a
+              href="mailto:ryan@ryanyork.io"
+              className="transition-colors hover:text-accent"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              ryan@ryanyork.io
+            </a>
+          </p>
           <p
             className="mt-4 text-xs text-muted/60"
             style={{ fontFamily: "var(--font-mono)" }}
