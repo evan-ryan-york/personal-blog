@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Post } from "./posts";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.io";
 
 export function generatePostMetadata(post: Post): Metadata {
   const ogImageUrl = post.frontmatter.ogImage

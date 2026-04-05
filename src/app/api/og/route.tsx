@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
               fontWeight: 600,
             }}
           >
-            ryanyork.com
+            ryanyork.io
           </div>
         </div>
       </div>

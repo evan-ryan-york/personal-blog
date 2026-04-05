@@ -1,7 +1,7 @@
 import { Feed } from "feed";
 import { getAllPosts } from "@/lib/posts";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.io";
 
 export async function GET() {
   const posts = getAllPosts();

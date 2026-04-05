@@ -10,7 +10,7 @@ Ryan York
 - Topics: technology, AI, product, education, purpose, equity, politics, happiness
 
 ## Posts
-- https://ryanyork.com/posts/the-living-product — What happens when software doesn't just build itself — but senses its environment, decides how to grow, and evolves?
+- https://ryanyork.io/posts/the-living-product — What happens when software doesn't just build itself — but senses its environment, decides how to grow, and evolves?
 
 ## Feed
-- RSS: https://ryanyork.com/feed.xml
+- RSS: https://ryanyork.io/feed.xml

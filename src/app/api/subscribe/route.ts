@@ -35,9 +35,9 @@ export async function POST(request: Request) {
           subject: "Thanks for subscribing!",
           html: `<p>Hey there!</p>
 <p>Thanks for subscribing to my blog. I'll send you an email when I publish something new.</p>
-<p>In the meantime, you can check out my latest posts at <a href="https://ryanyork.com">ryanyork.com</a>.</p>
+<p>In the meantime, you can check out my latest posts at <a href="https://ryanyork.io">ryanyork.io</a>.</p>
 <p>— Ryan</p>`,
-          text: `Hey there!\n\nThanks for subscribing to my blog. I'll send you an email when I publish something new.\n\nIn the meantime, you can check out my latest posts at https://ryanyork.com.\n\n— Ryan`,
+          text: `Hey there!\n\nThanks for subscribing to my blog. I'll send you an email when I publish something new.\n\nIn the meantime, you can check out my latest posts at https://ryanyork.io.\n\n— Ryan`,
         });
       } catch (emailError) {
         console.error("Welcome email failed:", emailError);

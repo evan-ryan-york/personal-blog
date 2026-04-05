@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ryanyork.com/sitemap.xml
+Sitemap: https://ryanyork.io/sitemap.xml
