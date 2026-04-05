@@ -294,8 +294,7 @@ body {
   font-size: 1.08rem;
   color: var(--pa-ink, #1f2937);
   line-height: 1.8;
-  text-align: justify;
-  text-justify: inter-word;
+  text-align: left;
 }
 
 .progressive-agenda-prose h2 {

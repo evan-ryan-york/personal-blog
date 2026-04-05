@@ -65,7 +65,7 @@ export default function QuadrantChart() {
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
     const w = rect.width;
-    const h = w * 0.75;
+    const h = w * (w < 500 ? 0.9 : 0.75);
 
     canvas.width = w * dpr;
     canvas.height = h * dpr;
@@ -133,7 +133,7 @@ export default function QuadrantChart() {
     ctx.strokeRect(margin.left, margin.top, chartW, chartH);
 
     // --- Axis arrows and labels ---
-    const labelFont = `600 ${Math.max(11, w * 0.018)}px ${fontBody}`;
+    const labelFont = `600 ${Math.max(9, w * 0.018)}px ${fontBody}`;
     const labelColor = muted;
 
     // X-axis label (bottom center)
@@ -154,7 +154,7 @@ export default function QuadrantChart() {
     ctx.restore();
 
     // Low/High markers
-    const markerFont = `500 ${Math.max(10, w * 0.015)}px ${fontBody}`;
+    const markerFont = `500 ${Math.max(8, w * 0.015)}px ${fontBody}`;
     ctx.font = markerFont;
     ctx.fillStyle = hexToRgba(muted, 0.5);
     ctx.letterSpacing = "1px";
@@ -172,9 +172,9 @@ export default function QuadrantChart() {
     ctx.letterSpacing = "0px";
 
     // --- Quadrant content ---
-    const titleSize = Math.max(17, Math.min(w * 0.032, 26));
-    const subtitleSize = Math.max(13, Math.min(w * 0.02, 16));
-    const pad = Math.max(20, w * 0.035);
+    const titleSize = Math.max(12, Math.min(w * 0.032, 26));
+    const subtitleSize = Math.max(10, Math.min(w * 0.02, 16));
+    const pad = Math.max(14, w * 0.035);
     const qw = chartW / 2 - pad * 2;
 
     // Quadrant data
