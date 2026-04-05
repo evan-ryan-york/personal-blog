@@ -12,10 +12,10 @@ export async function POST(request: Request) {
     }
 
     const apiKey = process.env.RESEND_API_KEY;
-    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    const fromEmail = process.env.RESEND_FROM_EMAIL;
 
-    if (!apiKey || !audienceId) {
-      console.warn("Resend API key or audience ID not configured.");
+    if (!apiKey) {
+      console.warn("Resend API key not configured.");
       return NextResponse.json(
         { error: "Subscriptions are not configured yet." },
         { status: 503 }
@@ -25,10 +25,24 @@ export async function POST(request: Request) {
     const { Resend } = await import("resend");
     const resend = new Resend(apiKey);
 
-    await resend.contacts.create({
-      email,
-      audienceId,
-    });
+    await resend.contacts.create({ email });
+
+    if (fromEmail) {
+      try {
+        await resend.emails.send({
+          from: fromEmail,
+          to: email,
+          subject: "Thanks for subscribing!",
+          html: `<p>Hey there!</p>
+<p>Thanks for subscribing to my blog. I'll send you an email when I publish something new.</p>
+<p>In the meantime, you can check out my latest posts at <a href="https://ryanyork.com">ryanyork.com</a>.</p>
+<p>— Ryan</p>`,
+          text: `Hey there!\n\nThanks for subscribing to my blog. I'll send you an email when I publish something new.\n\nIn the meantime, you can check out my latest posts at https://ryanyork.com.\n\n— Ryan`,
+        });
+      } catch (emailError) {
+        console.error("Welcome email failed:", emailError);
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
