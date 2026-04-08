@@ -57,6 +57,7 @@ import {
 } from "../../../../content/posts/2028-progressive-agenda/components/BulletList";
 import ScrollArt from "../../../../content/posts/2028-progressive-agenda/components/ScrollArt";
 
+import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
 
@@ -150,6 +151,9 @@ export default async function PostPage({ params }: { params: Params }) {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
           <CustomLayout post={post}>{content}</CustomLayout>
+          <div className="mx-auto max-w-3xl px-6 md:px-8">
+            <CommentSection slug={slug} />
+          </div>
         </>
       );
     }

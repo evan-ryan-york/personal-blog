@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
+import CommentSection from "@/components/CommentSection";
 
 export default function DefaultPostLayout({
   post,
@@ -61,6 +62,8 @@ export default function DefaultPostLayout({
         </header>
 
         <div className="animate-fade-up delay-2 prose-blog">{children}</div>
+
+        <CommentSection slug={post.slug} />
 
         <footer className="animate-fade-up delay-4 mt-16 border-t border-paper-warm pt-8">
           <Link

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
+import TldrSection from "./components/TldrSection";
 
 export default function LivingProductLayout({
   post,
@@ -120,6 +121,9 @@ export default function LivingProductLayout({
           />
         </div>
       </section>
+
+      {/* TL;DR */}
+      <TldrSection />
 
       {/* Content */}
       <div style={{ background: "var(--lp-paper, #f6f3ee)", width: "100%" }}>
