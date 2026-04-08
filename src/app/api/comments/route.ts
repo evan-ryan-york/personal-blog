@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
-const anthropic = new Anthropic();
+let _anthropic: Anthropic | null = null;
+function getAnthropic() {
+  if (!_anthropic) _anthropic = new Anthropic();
+  return _anthropic;
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,7 +19,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("comments")
     .select("*")
     .eq("post_slug", slug)
@@ -62,7 +66,7 @@ export async function POST(request: Request) {
     }
 
     // Moderate with Claude before inserting
-    const moderation = await anthropic.messages.create({
+    const moderation = await getAnthropic().messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 16,
       messages: [
@@ -91,7 +95,7 @@ Comment: ${trimmedBody}`,
       );
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from("comments")
       .insert({
         post_slug,
