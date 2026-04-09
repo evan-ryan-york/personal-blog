@@ -67,7 +67,7 @@ export default function LivingProductLayout({
               animation: "fadeUp 0.8s ease forwards 0.2s",
             }}
           >
-            A thesis on autonomous product development
+            A thesis on the future of software
           </div>
           <h1
             className="mb-7 opacity-0"
@@ -157,10 +157,11 @@ export default function LivingProductLayout({
               color: "var(--lp-dark-heading, #f6f3ee)",
             }}
           >
-            The product{" "}
+            What are we{" "}
             <em style={{ fontStyle: "italic", color: "var(--lp-accent, #c45d3e)" }}>
-              that evolves
+              teaching
             </em>
+            {" "}this thing to become?
           </h2>
           <p
             style={{
@@ -171,12 +172,9 @@ export default function LivingProductLayout({
               marginBottom: "1.5rem",
             }}
           >
-            We shape the conditions for growth. The product senses its
-            environment, decides how to adapt, builds new capabilities, tests
-            them against reality, and encodes what it learns. Every cycle it
-            gets fitter — more attuned to what users need, more effective at
-            building solutions they'll love, more accurate at predicting what
-            will work.
+            The next generation of software will not just be built. It will
+            be raised. It will sense its environment. It will adapt. It will
+            heal. It will grow. It will prune its own excess.
           </p>
           <p
             style={{
@@ -186,9 +184,9 @@ export default function LivingProductLayout({
               lineHeight: 1.85,
             }}
           >
-            The question isn't whether this is possible. The pieces exist. The
-            question is who builds it first — and what kind of advantage a
-            living product creates over one that's merely built.
+            The leaders who matter most will be the ones who can design the
+            DNA, choose the signals, define the purpose, and take
+            responsibility for what the organism becomes.
           </p>
         </div>
       </section>

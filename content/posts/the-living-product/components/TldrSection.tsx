@@ -154,7 +154,7 @@ export default function TldrSection() {
                     fontWeight: 300,
                   }}
                 >
-                  What if software could improve itself without waiting for someone to tell it what to do next?
+                  We have been building plastic plants &mdash; software that looks alive but does not grow, heal, or reorganize itself. AI has accelerated this paradigm, but the underlying model is unchanged. A bigger question is coming: what if software no longer needed to be built this way at all?
                 </p>
                 <ul
                   style={{
@@ -170,27 +170,16 @@ export default function TldrSection() {
                   }}
                 >
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The problem:</strong> Today,
-                    AI can write code&mdash;but a human still has to decide what to
-                    build. The &ldquo;factory&rdquo; is automated, but the
-                    &ldquo;brain&rdquo; isn&rsquo;t.
+                    <strong style={{ fontWeight: 500 }}>The shift:</strong> The future is software that behaves less like an inert tool and more like an organism. The source code no longer just defines what the product is &mdash; it defines the rules by which the product can grow.
                   </li>
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The idea:</strong> Connect
-                    two systems in a loop. One listens to users, sales calls, surveys,
-                    and market trends to figure out <em>what</em> to build. The other
-                    designs, tests, and ships it automatically.
+                    <strong style={{ fontWeight: 500 }}>The framework:</strong> Three concepts carry the model. <em>DNA</em> (rules that govern growth), <em>Signals</em> (what the system learns from &mdash; and what it is taught to ignore), and <em>Purpose</em> (what the system is ultimately being directed toward &mdash; where values enter the system).
                   </li>
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The result:</strong> A product
-                    that behaves like a living thing&mdash;sensing its environment,
-                    adapting, and getting smarter every cycle.
+                    <strong style={{ fontWeight: 500 }}>The loop:</strong> Sense, interpret, grow, learn, heal &amp; prune &mdash; a continuous cycle of closed-loop adaptation. Generation is not the hard part for long. Judgment is.
                   </li>
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The human role:</strong> People
-                    stop managing the assembly line and start acting like
-                    gardeners&mdash;setting direction, making bold bets, and shaping
-                    the conditions for growth.
+                    <strong style={{ fontWeight: 500 }}>The human role:</strong> Part geneticist, part gardener, part moral authority. The organism will be very good at optimization. It will not be very good at meaning. That is why the human job gets bigger, not smaller.
                   </li>
                 </ul>
 
