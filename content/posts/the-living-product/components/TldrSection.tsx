@@ -170,13 +170,13 @@ export default function TldrSection() {
                   }}
                 >
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The shift:</strong> The future is software that behaves less like an inert tool and more like an organism. The source code no longer just defines what the product is &mdash; it defines the rules by which the product can grow.
+                    <strong style={{ fontWeight: 500 }}>The shift: </strong> The future is software that behaves less like an inert tool and more like an organism. The source code no longer defines what the product is &mdash; it defines the rules by which the product can grow.
                   </li>
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The framework:</strong> Three concepts carry the model. <em>DNA</em> (rules that govern growth), <em>Signals</em> (what the system learns from &mdash; and what it is taught to ignore), and <em>Purpose</em> (what the system is ultimately being directed toward &mdash; where values enter the system).
+                    <strong style={{ fontWeight: 500 }}>The framework:</strong> Three concepts carry the model. <em>DNA</em> (rules that govern growth), <em>Environment</em> (what the system learns from &mdash; and what it is taught to ignore), and <em>Purpose</em> (what the system is ultimately being directed toward &mdash; where values enter the system).
                   </li>
                   <li>
-                    <strong style={{ fontWeight: 500 }}>The loop:</strong> Sense, interpret, grow, learn, heal &amp; prune &mdash; a continuous cycle of closed-loop adaptation. Generation is not the hard part for long. Judgment is.
+                    <strong style={{ fontWeight: 500 }}>The loop: </strong> Sense, interpret, grow, learn, heal &amp; prune &mdash; a continuous cycle of closed-loop adaptation. Generation is not the hard part for long. Judgment is.
                   </li>
                   <li>
                     <strong style={{ fontWeight: 500 }}>The human role:</strong> Part geneticist, part gardener, part moral authority. The organism will be very good at optimization. It will not be very good at meaning. That is why the human job gets bigger, not smaller.
