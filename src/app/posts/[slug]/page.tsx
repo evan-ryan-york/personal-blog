@@ -136,6 +136,11 @@ export default async function PostPage({ params }: { params: Params }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
+  if (
+    post.frontmatter.status === "draft" &&
+    process.env.NODE_ENV !== "development"
+  )
+    notFound();
 
   const components = postComponentsMap[slug] || {};
   const content = await renderMDX(post.content, components);

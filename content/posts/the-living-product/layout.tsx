@@ -138,59 +138,6 @@ export default function LivingProductLayout({
         </div>
       </div>
 
-      {/* Closing */}
-      <section
-        className="text-center"
-        style={{
-          background: "var(--lp-deep, #2c2520)",
-          padding: "5rem 2rem",
-        }}
-      >
-        <div className="mx-auto" style={{ maxWidth: 600 }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-display), Georgia, serif",
-              fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
-              fontWeight: 400,
-              lineHeight: 1.2,
-              marginBottom: "1.5rem",
-              color: "var(--lp-dark-heading, #f6f3ee)",
-            }}
-          >
-            What are we{" "}
-            <em style={{ fontStyle: "italic", color: "var(--lp-accent, #c45d3e)" }}>
-              teaching
-            </em>
-            {" "}this thing to become?
-          </h2>
-          <p
-            style={{
-              color: "var(--lp-dark-body, #c9c2b8)",
-              fontWeight: 300,
-              fontSize: "1.05rem",
-              lineHeight: 1.85,
-              marginBottom: "1.5rem",
-            }}
-          >
-            The next generation of software will not just be built. It will
-            be raised. It will sense its environment. It will adapt. It will
-            heal. It will grow. It will prune its own excess.
-          </p>
-          <p
-            style={{
-              color: "var(--lp-dark-muted, #a09890)",
-              fontWeight: 300,
-              fontSize: "1.05rem",
-              lineHeight: 1.85,
-            }}
-          >
-            The leaders who matter most will be the ones who can design the
-            DNA, choose the signals, define the purpose, and take
-            responsibility for what the organism becomes.
-          </p>
-        </div>
-      </section>
-
       {/* Back link */}
       <div
         className="border-t px-6 py-8 md:px-8"
