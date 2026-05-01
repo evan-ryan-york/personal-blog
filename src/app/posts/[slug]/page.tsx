@@ -29,32 +29,32 @@ import PostImage from "../../../../content/posts/the-living-product/components/P
 import Highlight from "../../../../content/posts/the-living-product/components/Highlight";
 
 // Progressive Agenda post imports
-import ProgressiveAgendaLayout from "../../../../content/posts/2028-progressive-agenda/layout";
-import PAScrollReveal from "../../../../content/posts/2028-progressive-agenda/components/ScrollReveal";
-import PASection from "../../../../content/posts/2028-progressive-agenda/components/Section";
-import PACallout from "../../../../content/posts/2028-progressive-agenda/components/Callout";
-import PADivider from "../../../../content/posts/2028-progressive-agenda/components/PostDivider";
-import PAHighlight from "../../../../content/posts/2028-progressive-agenda/components/Highlight";
-import QuadrantChart from "../../../../content/posts/2028-progressive-agenda/components/QuadrantChart";
-import FootnoteRef from "../../../../content/posts/2028-progressive-agenda/components/FootnoteRef";
+import ProgressiveAgendaLayout from "../../../../content/posts/progressive-agenda/layout";
+import PAScrollReveal from "../../../../content/posts/progressive-agenda/components/ScrollReveal";
+import PASection from "../../../../content/posts/progressive-agenda/components/Section";
+import PACallout from "../../../../content/posts/progressive-agenda/components/Callout";
+import PADivider from "../../../../content/posts/progressive-agenda/components/PostDivider";
+import PAHighlight from "../../../../content/posts/progressive-agenda/components/Highlight";
+import QuadrantChart from "../../../../content/posts/progressive-agenda/components/QuadrantChart";
+import FootnoteRef from "../../../../content/posts/progressive-agenda/components/FootnoteRef";
 import {
   Footnotes,
   Footnote,
-} from "../../../../content/posts/2028-progressive-agenda/components/Footnotes";
-import { PlatformSection } from "../../../../content/posts/2028-progressive-agenda/components/PlatformList";
+} from "../../../../content/posts/progressive-agenda/components/Footnotes";
+import { PlatformSection } from "../../../../content/posts/progressive-agenda/components/PlatformList";
 import {
   StatRow,
   Stat,
-} from "../../../../content/posts/2028-progressive-agenda/components/StatRow";
+} from "../../../../content/posts/progressive-agenda/components/StatRow";
 import {
   ThreeUp,
   ColumnCard,
-} from "../../../../content/posts/2028-progressive-agenda/components/ThreeUp";
+} from "../../../../content/posts/progressive-agenda/components/ThreeUp";
 import {
   BulletList,
   Bullet,
-} from "../../../../content/posts/2028-progressive-agenda/components/BulletList";
-import ScrollArt from "../../../../content/posts/2028-progressive-agenda/components/ScrollArt";
+} from "../../../../content/posts/progressive-agenda/components/BulletList";
+import ScrollArt from "../../../../content/posts/progressive-agenda/components/ScrollArt";
 
 import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
@@ -82,7 +82,7 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     PostImage,
     Highlight,
   },
-  "2028-progressive-agenda": {
+  "progressive-agenda": {
     ScrollReveal: PAScrollReveal,
     Section: PASection,
     Callout: PACallout,
@@ -112,7 +112,7 @@ const postLayoutMap: Record<
   }>
 > = {
   "the-living-product": LivingProductLayout,
-  "2028-progressive-agenda": ProgressiveAgendaLayout,
+  "progressive-agenda": ProgressiveAgendaLayout,
 };
 
 export async function generateStaticParams() {

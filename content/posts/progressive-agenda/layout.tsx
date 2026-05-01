@@ -77,7 +77,7 @@ export default function ProgressiveAgendaLayout({
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: "url(/posts/2028-progressive-agenda/hero.png)",
+            backgroundImage: "url(/posts/progressive-agenda/hero.png)",
             backgroundSize: "cover",
             backgroundPosition: "center",
             opacity: 0.15,
@@ -164,7 +164,7 @@ export default function ProgressiveAgendaLayout({
               animation: "fadeUp 0.8s ease forwards 0.1s",
             }}
           >
-            A Framework for the 2028 Progressive Platform
+            A Framework for the Progressive Platform
           </div>
 
           {/* Thin rule */}
