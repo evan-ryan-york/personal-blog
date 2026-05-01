@@ -63,7 +63,7 @@ export default function ProgressiveAgendaLayout({
       {/* Hero — dark, immersive, with soft radial gradients */}
       <header
         style={{
-          background: "#3a5e8c",
+          background: "#000",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
@@ -73,15 +73,21 @@ export default function ProgressiveAgendaLayout({
           overflow: "hidden",
         }}
       >
-        {/* Hero background image */}
+        {/* Hero background image — full color */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage: "url(/posts/progressive-agenda/hero.png)",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.15,
-            mixBlendMode: "luminosity",
+          }}
+        />
+
+        {/* Blue tint overlay — soft brand color over the image */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: "rgba(30, 58, 95, 0.7)",
           }}
         />
 
@@ -143,7 +149,7 @@ export default function ProgressiveAgendaLayout({
             fontWeight: 500,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.4)",
+            color: "#ffffff",
           }}
         >
           Ryan York
@@ -159,7 +165,7 @@ export default function ProgressiveAgendaLayout({
               fontWeight: 600,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.5)",
+              color: "#ffffff",
               marginBottom: "2rem",
               animation: "fadeUp 0.8s ease forwards 0.1s",
             }}
@@ -197,7 +203,7 @@ export default function ProgressiveAgendaLayout({
             <br />
             <span
               style={{
-                color: "rgba(255,255,255,0.55)",
+                color: "#ffffff",
                 fontWeight: 400,
               }}
             >
@@ -219,7 +225,7 @@ export default function ProgressiveAgendaLayout({
               fontFamily: "var(--pa-font-body)",
               fontSize: "1.15rem",
               lineHeight: 1.75,
-              color: "rgba(255,255,255,0.55)",
+              color: "#ffffff",
               maxWidth: 620,
               fontWeight: 400,
               animation: "fadeUp 0.8s ease forwards 0.5s",
@@ -234,7 +240,7 @@ export default function ProgressiveAgendaLayout({
             style={{
               fontFamily: "var(--pa-font-body)",
               fontSize: "0.78rem",
-              color: "rgba(255,255,255,0.3)",
+              color: "#ffffff",
               marginTop: "2.5rem",
               letterSpacing: "0.04em",
               animation: "fadeUp 0.8s ease forwards 0.65s",

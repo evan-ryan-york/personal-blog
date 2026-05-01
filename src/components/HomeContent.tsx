@@ -119,12 +119,18 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
                       className="group flex overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
                     >
                       {post.frontmatter.ogImage && (
-                        <div className="w-40 shrink-0 overflow-hidden md:w-56">
+                        <div className="relative w-40 shrink-0 overflow-hidden md:w-56">
                           <img
                             src={post.frontmatter.ogImage}
                             alt={post.frontmatter.title}
                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
+                          {post.slug === "progressive-agenda" && (
+                            <div
+                              className="pointer-events-none absolute inset-0"
+                              style={{ background: "rgba(30, 58, 95, 0.3)" }}
+                            />
+                          )}
                         </div>
                       )}
                       <article className="flex flex-col justify-center p-5">
