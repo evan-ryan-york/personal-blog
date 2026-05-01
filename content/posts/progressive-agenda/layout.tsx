@@ -275,13 +275,7 @@ export default function ProgressiveAgendaLayout({
       </header>
 
       {/* Content — two-column: prose left, scroll art right */}
-      <div
-        style={{
-          background:
-            "color-mix(in srgb, var(--pa-accent, #1e3a5f) 10%, white)",
-          width: "100%",
-        }}
-      >
+      <div style={{ background: "#ffffff", width: "100%" }}>
         <div
           className="mx-auto"
           style={{
@@ -323,8 +317,7 @@ export default function ProgressiveAgendaLayout({
         className="px-6 py-8 md:px-10"
         style={{
           borderTop: "1px solid var(--pa-divider, #e5e7eb)",
-          background:
-            "color-mix(in srgb, var(--pa-accent, #1e3a5f) 10%, white)",
+          background: "#ffffff",
         }}
       >
         <div className="mx-auto" style={{ maxWidth: 820 }}>
