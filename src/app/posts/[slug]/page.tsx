@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import {
-  getAllPosts,
+  getAllRoutablePostSlugs,
   getPostBySlug,
   postHasCustomLayout,
 } from "@/lib/posts";
@@ -116,7 +116,7 @@ const postLayoutMap: Record<
 };
 
 export async function generateStaticParams() {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
+  return getAllRoutablePostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

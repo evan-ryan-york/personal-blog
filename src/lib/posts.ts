@@ -7,8 +7,14 @@ const postsDirectory = path.join(process.cwd(), "content/posts");
 
 const isDev = process.env.NODE_ENV === "development";
 
-function isPostVisible(frontmatter: PostFrontmatter): boolean {
-  return frontmatter.status !== "draft" || isDev;
+function isPostListable(frontmatter: PostFrontmatter): boolean {
+  if (isDev) return true;
+  return frontmatter.status !== "draft" && frontmatter.status !== "unlisted";
+}
+
+function isPostRoutable(frontmatter: PostFrontmatter): boolean {
+  if (isDev) return true;
+  return frontmatter.status !== "draft";
 }
 
 export interface PostFrontmatter {
@@ -18,7 +24,7 @@ export interface PostFrontmatter {
   tags: string[];
   ogImage?: string;
   layout?: "custom";
-  status?: "published" | "draft";
+  status?: "published" | "draft" | "unlisted";
 }
 
 export interface Post {
@@ -38,7 +44,7 @@ export function getAllPosts(): Post[] {
   const posts = slugs
     .map((slug) => getPostBySlug(slug))
     .filter((post): post is Post => post !== null)
-    .filter((post) => isPostVisible(post.frontmatter))
+    .filter((post) => isPostListable(post.frontmatter))
     .sort(
       (a, b) =>
         new Date(b.frontmatter.date).getTime() -
@@ -46,6 +52,20 @@ export function getAllPosts(): Post[] {
     );
 
   return posts;
+}
+
+export function getAllRoutablePostSlugs(): string[] {
+  const slugs = fs
+    .readdirSync(postsDirectory)
+    .filter((name) =>
+      fs.statSync(path.join(postsDirectory, name)).isDirectory()
+    );
+
+  return slugs
+    .map((slug) => getPostBySlug(slug))
+    .filter((post): post is Post => post !== null)
+    .filter((post) => isPostRoutable(post.frontmatter))
+    .map((post) => post.slug);
 }
 
 export function getPostBySlug(slug: string): Post | null {
