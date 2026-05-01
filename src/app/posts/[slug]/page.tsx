@@ -32,7 +32,6 @@ import Highlight from "../../../../content/posts/the-living-product/components/H
 import ProgressiveAgendaLayout from "../../../../content/posts/2028-progressive-agenda/layout";
 import PAScrollReveal from "../../../../content/posts/2028-progressive-agenda/components/ScrollReveal";
 import PASection from "../../../../content/posts/2028-progressive-agenda/components/Section";
-import PALead from "../../../../content/posts/2028-progressive-agenda/components/Lead";
 import PACallout from "../../../../content/posts/2028-progressive-agenda/components/Callout";
 import PADivider from "../../../../content/posts/2028-progressive-agenda/components/PostDivider";
 import PAHighlight from "../../../../content/posts/2028-progressive-agenda/components/Highlight";
@@ -86,7 +85,6 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
   "2028-progressive-agenda": {
     ScrollReveal: PAScrollReveal,
     Section: PASection,
-    Lead: PALead,
     Callout: PACallout,
     Divider: PADivider,
     Highlight: PAHighlight,

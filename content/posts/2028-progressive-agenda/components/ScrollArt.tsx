@@ -67,7 +67,35 @@ function drawEmptyQuadrant(
   ctx.restore();
 }
 
-// 02: The Landscape — a crosshair inside a circle, mapping the terrain
+// 02: The Technology Is Not the Companies — a circle bisected into two halves
+// pulling apart — the technology on one side, the institutions on the other.
+function drawBisect(
+  ctx: CanvasRenderingContext2D, cx: number, y: number, r: number, progress: number, colors: Colors
+) {
+  const p = easeOut(progress);
+  const rad = r * 0.7;
+  const gap = r * 0.18 * p;
+  ctx.save();
+  ctx.lineWidth = SW;
+  // Left half — the technology
+  ctx.globalAlpha = p * 0.7;
+  ctx.strokeStyle = colors.accent;
+  ctx.beginPath();
+  ctx.arc(cx - gap, y, rad, Math.PI / 2, (3 * Math.PI) / 2);
+  ctx.stroke();
+  // Right half — the companies (enters slightly delayed, in secondary color)
+  const rp = Math.max(0, (p - 0.2) / 0.8);
+  if (rp > 0) {
+    ctx.globalAlpha = easeOut(rp) * 0.7;
+    ctx.strokeStyle = colors.secondary;
+    ctx.beginPath();
+    ctx.arc(cx + gap, y, rad, -Math.PI / 2, Math.PI / 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// 03: The Landscape — a crosshair inside a circle, mapping the terrain
 function drawFactions(
   ctx: CanvasRenderingContext2D, cx: number, y: number, r: number, progress: number, colors: Colors
 ) {
@@ -302,13 +330,14 @@ function drawArrow(
 
 const SECTIONS: SectionViz[] = [
   { label: "01", draw: drawEmptyQuadrant },
-  { label: "02", draw: drawFactions },
-  { label: "03", draw: drawTwoCommitments },
-  { label: "04", draw: drawBuildSmart },
-  { label: "05", draw: drawConverge },
-  { label: "06", draw: drawDiamond },
-  { label: "07", draw: drawChecklist },
-  { label: "08", draw: drawArrow },
+  { label: "02", draw: drawBisect },
+  { label: "03", draw: drawFactions },
+  { label: "04", draw: drawTwoCommitments },
+  { label: "05", draw: drawBuildSmart },
+  { label: "06", draw: drawConverge },
+  { label: "07", draw: drawDiamond },
+  { label: "08", draw: drawChecklist },
+  { label: "09", draw: drawArrow },
 ];
 
 export default function ScrollArt() {

@@ -193,25 +193,22 @@ export default function ProgressiveAgendaLayout({
               animation: "fadeUp 0.8s ease forwards 0.3s",
             }}
           >
-            The 2028 Progressive Agenda:
+            The Empty Quadrant:
             <br />
-            <span style={{ color: "rgba(255,255,255,0.95)" }}>
-              Abundance
-            </span>{" "}
             <span
               style={{
-                color: "rgba(255,255,255,0.35)",
+                color: "rgba(255,255,255,0.55)",
                 fontWeight: 400,
               }}
             >
-              +
+              A Progressive Case for
             </span>{" "}
             <span
               style={{
                 color: "color-mix(in srgb, var(--pa-secondary, #b91c1c), white 40%)",
               }}
             >
-              Equity
+              AI Abundance
             </span>
           </h1>
 

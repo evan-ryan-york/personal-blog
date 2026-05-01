@@ -4,6 +4,26 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
+function MDXAnchor({
+  href,
+  children,
+  ...rest
+}: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const isExternal = typeof href === "string" && /^https?:\/\//i.test(href);
+  if (isExternal) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  );
+}
+
 export async function renderMDX(
   source: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,5 +43,5 @@ export async function renderMDX(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { default: MDXContent } = await run(code, runtime as any);
 
-  return <MDXContent components={components} />;
+  return <MDXContent components={{ a: MDXAnchor, ...components }} />;
 }

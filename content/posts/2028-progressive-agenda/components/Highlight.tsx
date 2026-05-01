@@ -10,13 +10,13 @@ export default function Highlight({ children }: { children: ReactNode }) {
           padding: "2rem 2rem 2rem 2.5rem",
           borderLeft: "4px solid var(--pa-secondary, #b91c1c)",
           background: "var(--pa-highlight-bg, #fafafa)",
-          fontFamily: "var(--pa-font-display)",
-          fontSize: "1.35rem",
-          lineHeight: 1.55,
+          fontFamily: '"Lora", Georgia, serif',
+          fontSize: "1.25rem",
+          lineHeight: 1.6,
           color: "var(--pa-ink, #0f0f0f)",
-          fontWeight: 400,
-          fontStyle: "italic",
-          letterSpacing: "-0.01em",
+          fontWeight: 500,
+          fontStyle: "normal",
+          letterSpacing: "-0.005em",
         }}
       >
         {children}
