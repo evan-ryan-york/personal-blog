@@ -63,7 +63,7 @@ export default function ProgressiveAgendaLayout({
       {/* Hero — dark, immersive, with soft radial gradients */}
       <header
         style={{
-          background: "var(--pa-accent, #1e3a5f)",
+          background: "#3a5e8c",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
@@ -269,7 +269,13 @@ export default function ProgressiveAgendaLayout({
       </header>
 
       {/* Content — two-column: prose left, scroll art right */}
-      <div style={{ background: "#ffffff", width: "100%" }}>
+      <div
+        style={{
+          background:
+            "color-mix(in srgb, var(--pa-accent, #1e3a5f) 10%, white)",
+          width: "100%",
+        }}
+      >
         <div
           className="mx-auto"
           style={{
@@ -311,7 +317,8 @@ export default function ProgressiveAgendaLayout({
         className="px-6 py-8 md:px-10"
         style={{
           borderTop: "1px solid var(--pa-divider, #e5e7eb)",
-          background: "#ffffff",
+          background:
+            "color-mix(in srgb, var(--pa-accent, #1e3a5f) 10%, white)",
         }}
       >
         <div className="mx-auto" style={{ maxWidth: 820 }}>
