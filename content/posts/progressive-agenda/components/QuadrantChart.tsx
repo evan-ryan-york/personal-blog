@@ -180,7 +180,7 @@ export default function QuadrantChart() {
     // Quadrant data
     const quadrants = [
       {
-        title: "The Right",
+        title: "Republicans",
         subtitle: "Free market theory, protectionist reality.",
         x: margin.left + pad,
         y: margin.top + chartH / 4,
