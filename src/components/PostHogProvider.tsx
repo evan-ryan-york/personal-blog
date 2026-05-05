@@ -15,6 +15,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: false,
       capture_pageleave: true,
       persistence: "localStorage+cookie",
+      ip: true,
     });
   }, []);
 
