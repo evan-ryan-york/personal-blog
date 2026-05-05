@@ -70,7 +70,12 @@ export default async function TagPage({ params }: { params: Params }) {
                   <time dateTime={post.frontmatter.date}>
                     {new Date(post.frontmatter.date).toLocaleDateString(
                       "en-US",
-                      { year: "numeric", month: "long", day: "numeric" }
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        timeZone: "UTC",
+                      }
                     )}
                   </time>
                   <span className="text-paper-warm">/</span>

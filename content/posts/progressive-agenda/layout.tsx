@@ -250,6 +250,7 @@ export default function ProgressiveAgendaLayout({
               year: "numeric",
               month: "long",
               day: "numeric",
+              timeZone: "UTC",
             })}{" "}
             &middot; {post.readingTime}
           </div>

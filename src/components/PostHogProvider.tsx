@@ -17,21 +17,6 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       persistence: "localStorage+cookie",
       ip: true,
     });
-    // Debug: surface runtime config + expose client globally
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ph = posthog as any;
-    // eslint-disable-next-line no-console
-    console.log("[posthog] initialized", {
-      ip: ph.config?.ip,
-      api_host: ph.config?.api_host,
-      capture_pageview: ph.config?.capture_pageview,
-      distinct_id: ph.get_distinct_id?.(),
-      version: ph.LIB_VERSION ?? ph.config?.LIB_VERSION,
-    });
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).posthog = posthog;
-    }
   }, []);
 
   return (

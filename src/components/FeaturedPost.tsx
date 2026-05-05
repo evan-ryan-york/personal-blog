@@ -14,6 +14,7 @@ export default function FeaturedPost({ post }: { post: Post }) {
               year: "numeric",
               month: "long",
               day: "numeric",
+              timeZone: "UTC",
             })}
           </time>
           <span className="text-paper-warm">/</span>
