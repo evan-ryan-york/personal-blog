@@ -3,6 +3,7 @@ import { Bitter, Fira_Code } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { generateSiteMetadata } from "@/lib/seo";
 import Footer from "@/components/Footer";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
 
 const bitter = Bitter({
@@ -39,8 +40,10 @@ export default function RootLayout({
         className="flex min-h-full flex-col"
         style={{ fontFamily: "var(--font-body)" }}
       >
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PostHogProvider>
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </PostHogProvider>
         <Analytics />
       </body>
     </html>
