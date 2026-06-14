@@ -56,6 +56,25 @@ import {
 } from "../../../../content/posts/progressive-agenda/components/BulletList";
 import ScrollArt from "../../../../content/posts/progressive-agenda/components/ScrollArt";
 
+// Plane Never Flying post imports
+import PlaneNeverFlyingLayout from "../../../../content/posts/plane-never-flying/layout";
+import PFSection from "../../../../content/posts/plane-never-flying/components/Section";
+import PFLead from "../../../../content/posts/plane-never-flying/components/Lead";
+import PFHighlight from "../../../../content/posts/plane-never-flying/components/Highlight";
+import PFCallout from "../../../../content/posts/plane-never-flying/components/Callout";
+import PFDivider from "../../../../content/posts/plane-never-flying/components/PostDivider";
+import PFScene from "../../../../content/posts/plane-never-flying/components/Scene";
+import PFPostImage from "../../../../content/posts/plane-never-flying/components/PostImage";
+import {
+  Blueprint,
+  BlueprintItem,
+} from "../../../../content/posts/plane-never-flying/components/Blueprint";
+import PFFootnoteRef from "../../../../content/posts/plane-never-flying/components/FootnoteRef";
+import {
+  Footnotes as PFFootnotes,
+  Footnote as PFFootnote,
+} from "../../../../content/posts/plane-never-flying/components/Footnotes";
+
 import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
@@ -101,6 +120,20 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     Bullet,
     ScrollArt,
   },
+  "plane-never-flying": {
+    Section: PFSection,
+    Lead: PFLead,
+    Highlight: PFHighlight,
+    Callout: PFCallout,
+    Divider: PFDivider,
+    Scene: PFScene,
+    PostImage: PFPostImage,
+    Blueprint,
+    BlueprintItem,
+    FootnoteRef: PFFootnoteRef,
+    Footnotes: PFFootnotes,
+    Footnote: PFFootnote,
+  },
 };
 
 // Map of slug -> custom layout
@@ -113,6 +146,7 @@ const postLayoutMap: Record<
 > = {
   "the-living-product": LivingProductLayout,
   "progressive-agenda": ProgressiveAgendaLayout,
+  "plane-never-flying": PlaneNeverFlyingLayout,
 };
 
 export async function generateStaticParams() {

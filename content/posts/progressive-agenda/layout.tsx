@@ -3,8 +3,21 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Post } from "@/lib/posts";
-import DebugPanel from "./components/DebugPanel";
 import ScrollArt from "./components/ScrollArt";
+
+// Design tokens for this post. Applied statically here as the single source of
+// default fonts + palette (previously set at runtime by the Design Explorer).
+const PA_DESIGN_TOKENS = {
+  "--pa-font-display": "'Instrument Serif', Georgia, serif",
+  "--pa-font-body": "'Inter', system-ui, sans-serif",
+  "--pa-ink": "#0f0f0f",
+  "--pa-accent": "#1e3a5f",
+  "--pa-secondary": "#b91c1c",
+  "--pa-muted": "#6b7280",
+  "--pa-divider": "#e5e7eb",
+  "--pa-callout-bg": "#f8fafc",
+  "--pa-highlight-bg": "#fafafa",
+} as React.CSSProperties;
 
 function FontLoader() {
   return (
@@ -55,10 +68,9 @@ export default function ProgressiveAgendaLayout({
   children: React.ReactNode;
 }) {
   return (
-    <article className="pa-post">
+    <article className="pa-post" style={PA_DESIGN_TOKENS}>
       <FontLoader />
       <ReadingProgress />
-      <DebugPanel />
 
       {/* Hero — dark, immersive, with soft radial gradients */}
       <header
