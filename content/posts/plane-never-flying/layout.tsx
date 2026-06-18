@@ -73,7 +73,7 @@ export default function PlaneNeverFlyingLayout({
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: "url(/posts/plane-never-flying/hero.png)",
+            backgroundImage: "url(/posts/plane-never-flying/hero.webp)",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
