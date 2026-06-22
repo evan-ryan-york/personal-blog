@@ -184,7 +184,8 @@ export default function TldrSection() {
                     Reclaim the money and the time. Children learn embedded in real
                     work, outdoors, inside relationships, aimed at agency &mdash; with
                     AI quietly handling the mechanics so the human hours go back to
-                    childhood.
+                    childhood, and giving every child the patient one-to-one tutoring
+                    that was always the privilege of the wealthy.
                   </li>
                   <li>
                     <strong style={{ fontWeight: 600 }}>The stakes: </strong>

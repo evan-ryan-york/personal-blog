@@ -27,7 +27,7 @@ export function Blueprint({ children }: { children: ReactNode }) {
         >
           <span>The Blueprint</span>
           <span style={{ color: "var(--pf-muted, #6b6b6b)" }}>
-            One design, ten specs
+            One design, eight specs
           </span>
         </div>
         <div>{children}</div>

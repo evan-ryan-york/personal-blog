@@ -64,6 +64,7 @@ import PFHighlight from "../../../../content/posts/plane-never-flying/components
 import PFCallout from "../../../../content/posts/plane-never-flying/components/Callout";
 import PFDivider from "../../../../content/posts/plane-never-flying/components/PostDivider";
 import PFScene from "../../../../content/posts/plane-never-flying/components/Scene";
+import PFKeyBox from "../../../../content/posts/plane-never-flying/components/KeyBox";
 import PFPostImage from "../../../../content/posts/plane-never-flying/components/PostImage";
 import {
   Blueprint,
@@ -127,6 +128,7 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     Callout: PFCallout,
     Divider: PFDivider,
     Scene: PFScene,
+    KeyBox: PFKeyBox,
     PostImage: PFPostImage,
     Blueprint,
     BlueprintItem,
