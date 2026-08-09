@@ -11,3 +11,20 @@ export function getSupabase() {
   }
   return _supabase;
 }
+
+let _supabaseAdmin: SupabaseClient | null = null;
+
+// Secret-key client, for tables that must never be readable with the public
+// anon key (subscribers). Returns null when the key isn't configured so callers
+// can degrade instead of throwing.
+export function getSupabaseAdmin() {
+  const key = process.env.SUPABASE_PRIVATE_KEY;
+  if (!key) return null;
+
+  if (!_supabaseAdmin) {
+    _supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  }
+  return _supabaseAdmin;
+}

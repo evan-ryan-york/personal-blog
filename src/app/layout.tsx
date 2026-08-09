@@ -35,9 +35,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontVars} h-full antialiased`}>
+    <html lang="en" className={`${fontVars} antialiased`}>
       <body
-        className="flex min-h-full flex-col"
+        className="flex min-h-dvh flex-col"
         style={{ fontFamily: "var(--font-body)" }}
       >
         <PostHogProvider>

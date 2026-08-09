@@ -76,6 +76,15 @@ import {
   Footnote as PFFootnote,
 } from "../../../../content/posts/plane-never-flying/components/Footnotes";
 
+// Seven Bets post imports
+import SevenBetsLayout from "../../../../content/posts/seven-bets/layout";
+import SBBetHero from "../../../../content/posts/seven-bets/components/BetHero";
+import SBTheSeven from "../../../../content/posts/seven-bets/components/TheSeven";
+import SBClosing from "../../../../content/posts/seven-bets/components/Closing";
+import SBWhyItMatters, {
+  FullArgument as SBFullArgument,
+} from "../../../../content/posts/seven-bets/components/WhyItMatters";
+
 import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
@@ -136,6 +145,13 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     Footnotes: PFFootnotes,
     Footnote: PFFootnote,
   },
+  "seven-bets": {
+    TheSeven: SBTheSeven,
+    BetHero: SBBetHero,
+    WhyItMatters: SBWhyItMatters,
+    FullArgument: SBFullArgument,
+    Closing: SBClosing,
+  },
 };
 
 // Map of slug -> custom layout
@@ -149,6 +165,7 @@ const postLayoutMap: Record<
   "the-living-product": LivingProductLayout,
   "progressive-agenda": ProgressiveAgendaLayout,
   "plane-never-flying": PlaneNeverFlyingLayout,
+  "seven-bets": SevenBetsLayout,
 };
 
 export async function generateStaticParams() {
