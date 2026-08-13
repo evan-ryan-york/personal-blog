@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { isPreviewEnabled } from "@/lib/preview";
+import LogoutButton from "./LogoutButton";
 import SubscribeForm from "./SubscribeForm";
 
 export default async function Footer() {
@@ -35,13 +36,26 @@ export default async function Footer() {
             </a>
           </p>
           <div className="mt-4 flex items-center justify-end gap-4">
-            <Link
-              href={preview ? "/drafts" : "/login"}
-              className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
-              style={{ fontFamily: "var(--font-mono)" }}
-            >
-              {preview ? "Drafts" : "Login"}
-            </Link>
+            {preview ? (
+              <>
+                <Link
+                  href="/drafts"
+                  className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  Drafts
+                </Link>
+                <LogoutButton />
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                Login
+              </Link>
+            )}
             <p
               className="text-xs text-muted/60"
               style={{ fontFamily: "var(--font-mono)" }}
