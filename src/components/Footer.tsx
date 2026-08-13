@@ -1,6 +1,10 @@
+import Link from "next/link";
+import { isPreviewEnabled } from "@/lib/preview";
 import SubscribeForm from "./SubscribeForm";
 
-export default function Footer() {
+export default async function Footer() {
+  const preview = await isPreviewEnabled();
+
   return (
     <footer className="mt-auto border-t border-paper-warm px-6 py-12 md:px-8">
       <div className="mx-auto grid max-w-4xl gap-10 md:grid-cols-2">
@@ -30,12 +34,21 @@ export default function Footer() {
               ryan@ryanyork.io
             </a>
           </p>
-          <p
-            className="mt-4 text-xs text-muted/60"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            &copy; {new Date().getFullYear()} Ryan York
-          </p>
+          <div className="mt-4 flex items-center justify-end gap-4">
+            <Link
+              href={preview ? "/drafts" : "/login"}
+              className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {preview ? "Drafts" : "Login"}
+            </Link>
+            <p
+              className="text-xs text-muted/60"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              &copy; {new Date().getFullYear()} Ryan York
+            </p>
+          </div>
         </div>
       </div>
     </footer>

@@ -40,6 +40,15 @@ async function assertPublicSurfaceClean(path) {
   for (const marker of ["Seven Bets", "seven-bets"]) {
     assert.equal(body.includes(marker), false, `${path} listed the draft`);
   }
+
+  if (path === "/") {
+    assert.match(body, /href="\/login"/, "the public footer should link to login");
+    assert.doesNotMatch(
+      body,
+      /href="\/drafts"/,
+      "the public footer should not link to drafts"
+    );
+  }
 }
 
 await assertPrivateResponse("/posts/seven-bets");
@@ -47,6 +56,20 @@ await assertPrivateResponse("/posts/seven-bets", {
   headers: { RSC: "1" },
 });
 await assertPrivateResponse("/drafts");
+
+const anonymousPublish = await request("/api/publish", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Origin: new URL(baseUrl).origin,
+  },
+  body: JSON.stringify({ slug: "seven-bets" }),
+});
+assert.equal(
+  anonymousPublish.status,
+  404,
+  "publishing should be invisible without an author session"
+);
 
 for (const assetPath of [
   "/posts/seven-bets/hero.jpg",
@@ -86,6 +109,20 @@ for (const path of ["/posts/seven-bets", "/drafts"]) {
   assert.equal(response.status, 200, `${path} should be visible to the author`);
   assert.match(await response.text(), /Seven Bets/, `${path} should contain the draft`);
 }
+
+const authorHome = await request("/", { headers: { Cookie: cookie } });
+assert.equal(authorHome.status, 200, "the homepage should remain available to the author");
+const authorHomeBody = await authorHome.text();
+assert.match(
+  authorHomeBody,
+  /href="\/drafts"/,
+  "the authenticated footer should link to drafts"
+);
+assert.doesNotMatch(
+  authorHomeBody,
+  /href="\/login"/,
+  "the authenticated footer should replace login with drafts"
+);
 
 const authorAsset = await request("/api/draft-assets/seven-bets/hero.jpg", {
   headers: { Cookie: cookie },

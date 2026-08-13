@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDraftPosts } from "@/lib/posts";
 import { isPreviewEnabled } from "@/lib/preview";
+import { isGitHubPublishingConfigured } from "@/lib/githubPublisher";
 import DraftBanner from "@/components/DraftBanner";
+import PublishButton from "@/components/PublishButton";
 
 export const metadata: Metadata = {
   title: "Drafts — Ryan York",
@@ -17,6 +19,7 @@ export default async function DraftsPage() {
   if (!(await isPreviewEnabled())) notFound();
 
   const drafts = getDraftPosts();
+  const publishingConfigured = isGitHubPublishingConfigured();
 
   return (
     <>
@@ -56,12 +59,11 @@ export default async function DraftsPage() {
           ) : (
             <div className="space-y-10">
               {drafts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/posts/${post.slug}`}
-                  className="group block"
-                >
-                  <article>
+                <article key={post.slug}>
+                  <Link
+                    href={`/posts/${post.slug}`}
+                    className="group block"
+                  >
                     <div
                       className="mb-1 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
                       style={{ fontFamily: "var(--font-mono)" }}
@@ -94,15 +96,20 @@ export default async function DraftsPage() {
                     <p className="text-muted" style={{ lineHeight: 1.6 }}>
                       {post.frontmatter.description}
                     </p>
-                  </article>
-                </Link>
+                  </Link>
+                  <PublishButton
+                    slug={post.slug}
+                    title={post.frontmatter.title}
+                    configured={publishingConfigured}
+                  />
+                </article>
               ))}
             </div>
           )}
 
           <p className="mt-16 text-xs text-muted" style={{ lineHeight: 1.7 }}>
-            To publish, set <code>status: &quot;published&quot;</code> in the
-            post&rsquo;s frontmatter and deploy.
+            Publishing commits the status change to <code>main</code>. Vercel
+            then deploys the post automatically.
           </p>
         </div>
       </section>

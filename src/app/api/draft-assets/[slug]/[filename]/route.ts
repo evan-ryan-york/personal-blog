@@ -33,7 +33,7 @@ export async function GET(
   }
 
   const post = getPostBySlug(slug);
-  if (post?.status !== "draft" || !(await isPreviewEnabled())) {
+  if (!post || (post.status === "draft" && !(await isPreviewEnabled()))) {
     return unavailable();
   }
 
@@ -43,9 +43,14 @@ export async function GET(
     );
     const contentType = CONTENT_TYPES[path.extname(filename).toLowerCase()];
 
+    const cacheControl =
+      post.status === "draft"
+        ? "private, no-store"
+        : "public, max-age=31536000, immutable";
+
     return new Response(asset, {
       headers: {
-        "Cache-Control": "private, no-store",
+        "Cache-Control": cacheControl,
         "Content-Type": contentType,
         "X-Content-Type-Options": "nosniff",
       },

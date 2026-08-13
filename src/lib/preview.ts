@@ -14,6 +14,15 @@ import { draftMode } from "next/headers";
  */
 export async function isPreviewEnabled(): Promise<boolean> {
   if (process.env.NODE_ENV === "development") return true;
+  return isAuthorSessionEnabled();
+}
+
+/**
+ * Unlike `isPreviewEnabled`, this never grants access merely because the app
+ * is running locally. Mutations such as publishing always require a real
+ * password-backed Draft Mode cookie.
+ */
+export async function isAuthorSessionEnabled(): Promise<boolean> {
   const { isEnabled } = await draftMode();
   return isEnabled;
 }
