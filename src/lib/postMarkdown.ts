@@ -48,7 +48,7 @@ const CYNEFIN_ROWS: [string, string, string][] = [
   ["Simple", "Processing an invoice that has already been approved.", "AI already can fully do this work"],
   ["Complicated", "Performing an appendectomy.", "AI can do this work with the proper training, tools, and oversight"],
   ["Complex", "Designing and adapting a teacher-training program to improve student math outcomes tenfold.", "Most of this work is and will remain human"],
-  ["Chaotic", "Coordinating rescue operations after an earthquake strikes a dense urban center.", "This work is entirely human — instinct, speed, and judgement prevail"],
+  ["Chaotic", "Coordinating rescue operations after an earthquake strikes a dense urban center.", "This work is entirely human. Instinct, speed, and judgment prevail."],
 ];
 
 const cynefinPlate: Rule = (source) =>

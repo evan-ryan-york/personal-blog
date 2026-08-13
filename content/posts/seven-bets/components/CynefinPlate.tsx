@@ -42,7 +42,7 @@ const QUADRANTS: Quadrant[] = [
     example:
       "Coordinating rescue operations after an earthquake strikes a dense urban center.",
     implication:
-      "This work is entirely human, it represents spaces where instinct, speed, and judgement prevail",
+      "This work is entirely human. Instinct, speed, and judgment prevail.",
   },
 ];
 
