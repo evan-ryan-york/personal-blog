@@ -31,17 +31,23 @@ export default function WhyItMatters({
   );
 }
 
-// The pointer to a bet's own full-length post.
+// The pointer to a related post. `lead` labels the pointer; pass an empty
+// string to let the link text carry the whole sentence.
 export function FullArgument({
   href,
+  lead = "Full argument:",
   children,
 }: {
   href: string;
+  lead?: string;
   children: ReactNode;
 }) {
   return (
     <div className="sb-full-argument">
-      Full argument: <a href={href}>{children} &rarr;</a>
+      {lead ? `${lead} ` : null}
+      <a href={href} target="_blank" rel="noopener">
+        {children} &rarr;
+      </a>
     </div>
   );
 }

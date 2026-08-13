@@ -11,6 +11,16 @@ interface Comment {
   created_at: string;
 }
 
+async function loadComments(slug: string): Promise<Comment[] | null> {
+  try {
+    const res = await fetch(`/api/comments?slug=${encodeURIComponent(slug)}`);
+    return res.ok ? await res.json() : null;
+  } catch {
+    // Comments are non-critical, so a failed refresh leaves the current list.
+    return null;
+  }
+}
+
 function timeAgo(dateString: string): string {
   const seconds = Math.floor(
     (Date.now() - new Date(dateString).getTime()) / 1000
@@ -212,21 +222,23 @@ export default function CommentSection({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true);
 
   async function fetchComments() {
-    try {
-      const res = await fetch(`/api/comments?slug=${encodeURIComponent(slug)}`);
-      if (res.ok) {
-        setComments(await res.json());
-      }
-    } catch {
-      // silently fail — comments are non-critical
-    } finally {
-      setLoading(false);
-    }
+    const nextComments = await loadComments(slug);
+    if (nextComments) setComments(nextComments);
+    setLoading(false);
   }
 
   useEffect(() => {
-    fetchComments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    let cancelled = false;
+
+    loadComments(slug).then((nextComments) => {
+      if (cancelled) return;
+      if (nextComments) setComments(nextComments);
+      setLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   const topLevel = comments.filter((c) => !c.parent_id);

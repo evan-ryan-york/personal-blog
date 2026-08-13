@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
+import { postToMarkdown } from "@/lib/postMarkdown";
+import PostSummary from "./components/PostSummary";
 
 // Design tokens for this post — an engraved-plate palette: near-black ground,
 // brass accent, warm paper-white type. Declared here as the single source.
@@ -27,6 +29,8 @@ export default function SevenBetsLayout({
   post: Post;
   children: React.ReactNode;
 }) {
+  const tldr = post.frontmatter.tldr ?? [];
+
   return (
     <article className="sb-post" style={SB_TOKENS}>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,7 +60,8 @@ export default function SevenBetsLayout({
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: "url(/posts/seven-bets/hero.webp)",
+            backgroundImage:
+              "url(/api/draft-assets/seven-bets/hero.webp)",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -86,27 +91,21 @@ export default function SevenBetsLayout({
         </Link>
 
         <div className="sb-hero-block">
-          <div
-            className="sb-eyebrow opacity-0"
-            style={{ animation: "fadeUp 0.8s ease forwards 0.2s" }}
-          >
-            Seven predictions &middot; written down
-          </div>
           <h1
             className="sb-hero-title opacity-0"
-            style={{ animation: "fadeUp 0.8s ease forwards 0.35s" }}
+            style={{ animation: "fadeUp 0.8s ease forwards 0.2s" }}
           >
             Seven <em>Bets</em>
           </h1>
           <p
             className="sb-hero-dek opacity-0"
-            style={{ animation: "fadeUp 0.8s ease forwards 0.5s" }}
+            style={{ animation: "fadeUp 0.8s ease forwards 0.35s" }}
           >
             {post.frontmatter.description}
           </p>
           <div
             className="sb-hero-meta opacity-0"
-            style={{ animation: "fadeUp 0.8s ease forwards 0.65s" }}
+            style={{ animation: "fadeUp 0.8s ease forwards 0.5s" }}
           >
             {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
               year: "numeric",
@@ -121,7 +120,12 @@ export default function SevenBetsLayout({
 
       {/* Body — 820px column, with full-bleed plates escaping it */}
       <div className="sb-body-wrap">
-        <div className="sb-prose">{children}</div>
+        <div className="sb-prose">
+          {tldr.length > 0 ? (
+            <PostSummary items={tldr} markdown={postToMarkdown(post)} />
+          ) : null}
+          {children}
+        </div>
       </div>
 
       <div className="sb-footer">

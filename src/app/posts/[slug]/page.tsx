@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
 import {
-  getAllRoutablePostSlugs,
+  getPublicPostSlugs,
   getPostBySlug,
   postHasCustomLayout,
 } from "@/lib/posts";
+import { isPreviewEnabled } from "@/lib/preview";
 import { renderMDX } from "@/lib/mdx";
 import { generatePostMetadata, generateArticleJsonLd } from "@/lib/seo";
 import DefaultPostLayout from "@/components/DefaultPostLayout";
+import DraftBanner from "@/components/DraftBanner";
 
 // Post-specific imports
 import LivingProductLayout from "../../../../content/posts/the-living-product/layout";
@@ -79,7 +81,11 @@ import {
 // Seven Bets post imports
 import SevenBetsLayout from "../../../../content/posts/seven-bets/layout";
 import SBBetHero from "../../../../content/posts/seven-bets/components/BetHero";
+import SBCynefinPlate from "../../../../content/posts/seven-bets/components/CynefinPlate";
+import SBLead from "../../../../content/posts/seven-bets/components/Lead";
+import SBWagers from "../../../../content/posts/seven-bets/components/Wagers";
 import SBTheSeven from "../../../../content/posts/seven-bets/components/TheSeven";
+import SBTurn from "../../../../content/posts/seven-bets/components/Turn";
 import SBClosing from "../../../../content/posts/seven-bets/components/Closing";
 import SBWhyItMatters, {
   FullArgument as SBFullArgument,
@@ -148,6 +154,10 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
   "seven-bets": {
     TheSeven: SBTheSeven,
     BetHero: SBBetHero,
+    CynefinPlate: SBCynefinPlate,
+    Lead: SBLead,
+    Wagers: SBWagers,
+    Turn: SBTurn,
     WhyItMatters: SBWhyItMatters,
     FullArgument: SBFullArgument,
     Closing: SBClosing,
@@ -168,8 +178,10 @@ const postLayoutMap: Record<
   "seven-bets": SevenBetsLayout,
 };
 
+// Drafts are deliberately absent: they render on demand, and only for the
+// author. Everyone else gets the 404 below.
 export async function generateStaticParams() {
-  return getAllRoutablePostSlugs().map((slug) => ({ slug }));
+  return getPublicPostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -180,6 +192,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+
+  if (post.status === "draft") {
+    if (!(await isPreviewEnabled())) notFound();
+
+    const metadata = generatePostMetadata(post);
+    return {
+      ...metadata,
+      title: `[Draft] ${metadata.title}`,
+      robots: { index: false, follow: false },
+    };
+  }
+
   return generatePostMetadata(post);
 }
 
@@ -187,11 +211,9 @@ export default async function PostPage({ params }: { params: Params }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
-  if (
-    post.frontmatter.status === "draft" &&
-    process.env.NODE_ENV !== "development"
-  )
-    notFound();
+
+  const isDraft = post.status === "draft";
+  if (isDraft && !(await isPreviewEnabled())) notFound();
 
   const components = postComponentsMap[slug] || {};
   const content = await renderMDX(post.content, components);
@@ -202,6 +224,7 @@ export default async function PostPage({ params }: { params: Params }) {
     if (CustomLayout) {
       return (
         <>
+          {isDraft && <DraftBanner />}
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -217,6 +240,7 @@ export default async function PostPage({ params }: { params: Params }) {
 
   return (
     <>
+      {isDraft && <DraftBanner />}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

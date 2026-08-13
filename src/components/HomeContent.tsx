@@ -9,9 +9,15 @@ type Tab = "posts" | "about";
 interface HomeContentProps {
   posts: Post[];
   tags: [string, number][];
+  /** Author preview: drafts are in `posts` and get a badge. */
+  preview?: boolean;
 }
 
-export default function HomeContent({ posts, tags }: HomeContentProps) {
+export default function HomeContent({
+  posts,
+  tags,
+  preview = false,
+}: HomeContentProps) {
   const [tab, setTab] = useState<Tab>("posts");
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
@@ -62,6 +68,14 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
             {t}
           </span>
         ))}
+        {preview && (
+          <Link
+            href="/drafts"
+            className="pb-1 text-xs uppercase tracking-widest text-accent transition-colors hover:text-ink"
+          >
+            drafts
+          </Link>
+        )}
       </nav>
 
       {tab === "posts" && (
@@ -138,6 +152,11 @@ export default function HomeContent({ posts, tags }: HomeContentProps) {
                           className="mb-2 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
                           style={{ fontFamily: "var(--font-mono)" }}
                         >
+                          {post.status === "draft" && (
+                            <span className="rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-medium text-white">
+                              Draft
+                            </span>
+                          )}
                           <time dateTime={post.frontmatter.date}>
                             {new Date(
                               post.frontmatter.date

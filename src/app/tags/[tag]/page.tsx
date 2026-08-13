@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllTags, getPostsByTag } from "@/lib/posts";
+import { isPreviewEnabled } from "@/lib/preview";
 import type { Metadata } from "next";
 
 type Params = Promise<{ tag: string }>;
@@ -26,7 +27,8 @@ export async function generateMetadata({
 export default async function TagPage({ params }: { params: Params }) {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
-  const posts = getPostsByTag(decodedTag);
+  const includeDrafts = await isPreviewEnabled();
+  const posts = getPostsByTag(decodedTag, { includeDrafts });
 
   if (posts.length === 0) notFound();
 
@@ -67,6 +69,11 @@ export default async function TagPage({ params }: { params: Params }) {
                   className="mb-1 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
                   style={{ fontFamily: "var(--font-mono)" }}
                 >
+                  {post.status === "draft" && (
+                    <span className="rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-medium normal-case text-white">
+                      Draft
+                    </span>
+                  )}
                   <time dateTime={post.frontmatter.date}>
                     {new Date(post.frontmatter.date).toLocaleDateString(
                       "en-US",
