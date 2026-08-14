@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Post } from "@/lib/posts";
 import { postToMarkdown } from "@/lib/postMarkdown";
 import PostSummary from "./components/PostSummary";
@@ -56,15 +57,19 @@ export default function SevenBetsLayout({
           }}
         />
         {/* Hero art — seven lit portals, one per bet */}
-        <div
+        <Image
           aria-hidden
-          className="pointer-events-none absolute inset-0"
+          alt=""
+          className="pointer-events-none"
+          fill
+          preload
+          sizes="100vw"
+          src="/posts/seven-bets/hero.webp"
           style={{
-            backgroundImage:
-              "url(/api/draft-assets/seven-bets/hero.webp)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            objectFit: "cover",
+            objectPosition: "center",
           }}
+          unoptimized
         />
         {/* Brass glow, kept soft so the art carries the frame */}
         <div
