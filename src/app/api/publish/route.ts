@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getPostBySlug } from "@/lib/posts";
 import { isAuthorSessionEnabled } from "@/lib/preview";
 import { PublishError, publishPost } from "@/lib/githubPublisher";
+import { isSameOrigin } from "@/lib/sameOrigin";
 
 const SAFE_SLUG = /^[a-z0-9-]+$/;
 
@@ -9,21 +10,6 @@ function unavailable() {
   return NextResponse.json({ error: "Not found." }, { status: 404 });
 }
 
-function isSameOrigin(request: Request): boolean {
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-
-  const requestUrl = new URL(request.url);
-  const protocol =
-    request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ||
-    requestUrl.protocol.replace(/:$/, "");
-  const host =
-    request.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ||
-    request.headers.get("host") ||
-    requestUrl.host;
-
-  return origin === `${protocol}://${host}`;
-}
 
 export async function POST(request: Request) {
   if (!(await isAuthorSessionEnabled())) return unavailable();
