@@ -39,6 +39,13 @@ export default async function Footer() {
             {preview ? (
               <>
                 <Link
+                  href="/journal"
+                  className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  Journal
+                </Link>
+                <Link
                   href="/drafts"
                   className="rounded border border-paper-warm px-2.5 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
                   style={{ fontFamily: "var(--font-mono)" }}

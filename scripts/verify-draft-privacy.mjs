@@ -56,6 +56,37 @@ await assertPrivateResponse("/posts/seven-bets", {
   headers: { RSC: "1" },
 });
 await assertPrivateResponse("/drafts");
+await assertPrivateResponse("/journal");
+
+// The journal holds unpublished thinking, so every one of its surfaces has to
+// be invisible anonymously — the page, both mutations, and the asset proxy.
+const journalOrigin = new URL(baseUrl).origin;
+const anonymousJournalRequests = [
+  ["/api/journal?day=2026-01-01", {}],
+  [
+    "/api/journal",
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Origin: journalOrigin },
+      body: JSON.stringify({ entryDay: "2026-01-01", body: "leak" }),
+    },
+  ],
+  [
+    "/api/journal/assets",
+    {
+      method: "POST",
+      headers: { "Content-Type": "image/png", Origin: journalOrigin },
+      body: "not-an-image",
+    },
+  ],
+  ["/api/journal/assets/00000000-0000-4000-8000-000000000000.png", {}],
+];
+
+for (const [path, init] of anonymousJournalRequests) {
+  const response = await request(path, init);
+  assert.equal(response.status, 404, `${path} should be invisible anonymously`);
+}
+
 
 const anonymousPublish = await request("/api/publish", {
   method: "POST",
@@ -109,6 +140,9 @@ for (const path of ["/posts/seven-bets", "/drafts"]) {
   assert.equal(response.status, 200, `${path} should be visible to the author`);
   assert.match(await response.text(), /Seven Bets/, `${path} should contain the draft`);
 }
+
+const authorJournal = await request("/journal", { headers: { Cookie: cookie } });
+assert.equal(authorJournal.status, 200, "the journal should be visible to the author");
 
 const authorHome = await request("/", { headers: { Cookie: cookie } });
 assert.equal(authorHome.status, 200, "the homepage should remain available to the author");
