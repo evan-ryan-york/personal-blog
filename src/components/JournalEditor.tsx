@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Image } from "@tiptap/extension-image";
@@ -26,6 +32,9 @@ function localDay(date = new Date()): string {
   const day = `${date.getDate()}`.padStart(2, "0");
   return `${date.getFullYear()}-${month}-${day}`;
 }
+
+/** The local day never changes underneath us mid-session, so nothing to subscribe to. */
+const subscribeToNothing = () => () => {};
 
 function shiftDay(day: string, offset: number): string {
   const [year, month, date] = day.split("-").map(Number);
@@ -147,7 +156,18 @@ export default function JournalEditor({
 }: {
   recentDays: JournalDaySummary[];
 }) {
-  const [day, setDay] = useState<string | null>(null);
+  // `localDay()` is a client-only value — reading it while rendering on the
+  // server would bake the server's timezone into the markup. This returns null
+  // on the server and the browser's day after hydration, which avoids both the
+  // mismatch and a state-setting effect.
+  const clientDay = useSyncExternalStore(
+    subscribeToNothing,
+    () => localDay(),
+    () => null
+  );
+  // Only set when the author navigates away from today.
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const day = selectedDay ?? clientDay;
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [uploads, setUploads] = useState(0);
@@ -280,11 +300,6 @@ export default function JournalEditor({
     editorRef.current = editor;
   }, [editor]);
 
-  // Today is only knowable in the browser, so the first day is chosen on mount.
-  useEffect(() => {
-    setDay((current) => current ?? localDay());
-  }, []);
-
   // Load whichever day is selected, flushing any pending save for the day we
   // are leaving so switching days never drops the last keystrokes.
   useEffect(() => {
@@ -354,7 +369,7 @@ export default function JournalEditor({
     return () => window.removeEventListener("pagehide", flush);
   }, []);
 
-  const today = day === localDay();
+  const today = day !== null && day === clientDay;
   const status =
     uploads > 0
       ? `Uploading ${uploads} image${uploads === 1 ? "" : "s"}…`
@@ -371,7 +386,7 @@ export default function JournalEditor({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => day && setDay(shiftDay(day, -1))}
+              onClick={() => day && setSelectedDay(shiftDay(day, -1))}
               aria-label="Previous day"
               className="rounded px-2 py-1 text-sm text-muted transition-colors hover:bg-paper-warm hover:text-ink"
             >
@@ -388,7 +403,7 @@ export default function JournalEditor({
             </h1>
             <button
               type="button"
-              onClick={() => day && setDay(shiftDay(day, 1))}
+              onClick={() => day && setSelectedDay(shiftDay(day, 1))}
               aria-label="Next day"
               disabled={today}
               className="rounded px-2 py-1 text-sm text-muted transition-colors hover:bg-paper-warm hover:text-ink disabled:opacity-30 disabled:hover:bg-transparent"
@@ -398,7 +413,7 @@ export default function JournalEditor({
             {!today && (
               <button
                 type="button"
-                onClick={() => setDay(localDay())}
+                onClick={() => setSelectedDay(null)}
                 className="ml-1 rounded border border-paper-warm px-2 py-0.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
@@ -440,7 +455,7 @@ export default function JournalEditor({
               <li key={entry.entryDay}>
                 <button
                   type="button"
-                  onClick={() => setDay(entry.entryDay)}
+                  onClick={() => setSelectedDay(entry.entryDay)}
                   className={`block w-full text-left transition-colors hover:text-accent ${
                     entry.entryDay === day ? "text-accent" : "text-muted"
                   }`}

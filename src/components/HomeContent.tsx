@@ -69,12 +69,20 @@ export default function HomeContent({
           </span>
         ))}
         {preview && (
-          <Link
-            href="/drafts"
-            className="pb-1 text-xs uppercase tracking-widest text-accent transition-colors hover:text-ink"
-          >
-            drafts
-          </Link>
+          <>
+            <Link
+              href="/journal"
+              className="pb-1 text-xs uppercase tracking-widest text-accent transition-colors hover:text-ink"
+            >
+              journal
+            </Link>
+            <Link
+              href="/drafts"
+              className="pb-1 text-xs uppercase tracking-widest text-accent transition-colors hover:text-ink"
+            >
+              drafts
+            </Link>
+          </>
         )}
       </nav>
 
