@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { draftMode } from "next/headers";
-import { isAuthorAuthConfigured, verifyAuthorPassword } from "@/lib/authorAuth";
+import { isAuthorAuthConfigured } from "@/lib/authorAuth";
+import { createRouteSupabase } from "@/lib/supabaseServer";
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 15 * 60 * 1000;
@@ -37,12 +38,18 @@ function recordFailure(key: string): void {
   record.count += 1;
 }
 
-/** Sign in as the author: enables Draft Mode so drafts become visible. */
+/**
+ * Sign in as the author.
+ *
+ * Two cookies come out of a successful sign-in: Supabase's session, which is
+ * the identity and outlives both browser restarts and deploys, and Draft Mode's
+ * bypass, which is what actually makes drafts render. See `@/lib/preview`.
+ */
 export async function POST(request: Request) {
   if (!isAuthorAuthConfigured()) {
-    console.warn("AUTHOR_PASSWORD is not configured — preview is disabled.");
+    console.warn("Supabase auth or AUTHOR_EMAIL is not configured — sign-in is disabled.");
     return NextResponse.json(
-      { error: "Preview is not configured." },
+      { error: "Sign-in is not configured." },
       { status: 503 }
     );
   }
@@ -56,20 +63,42 @@ export async function POST(request: Request) {
     );
   }
 
+  let email: unknown;
   let password: unknown;
 
   try {
-    ({ password } = await request.json());
+    ({ email, password } = await request.json());
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  if (!verifyAuthorPassword(password)) {
+  if (typeof email !== "string" || typeof password !== "string") {
+    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  }
+
+  // One message for every failure, so this never becomes an oracle for which
+  // half was wrong — or for whether the author's address is what you guessed.
+  const rejected = NextResponse.json(
+    { error: "Those credentials are not right." },
+    { status: 401 }
+  );
+
+  // Checked before Supabase sees anything, so a stray account on the project
+  // cannot spend our rate limit or Supabase's on a sign-in that can never pass.
+  if (email.trim().toLowerCase() !== process.env.AUTHOR_EMAIL!.toLowerCase()) {
     recordFailure(key);
-    return NextResponse.json(
-      { error: "That password is not right." },
-      { status: 401 }
-    );
+    return rejected;
+  }
+
+  const supabase = await createRouteSupabase();
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.trim(),
+    password,
+  });
+
+  if (error) {
+    recordFailure(key);
+    return rejected;
   }
 
   attempts.delete(key);
@@ -80,8 +109,13 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: true });
 }
 
-/** Sign out: drops the bypass cookie, so the site goes back to public. */
+/** Sign out: drops both cookies, so the site goes back to public. */
 export async function DELETE() {
+  if (isAuthorAuthConfigured()) {
+    const supabase = await createRouteSupabase();
+    await supabase.auth.signOut();
+  }
+
   const draft = await draftMode();
   draft.disable();
 

@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 
 const baseUrl = process.env.DRAFT_TEST_BASE_URL || "http://127.0.0.1:4317";
+const email = process.env.DRAFT_TEST_EMAIL;
 const password = process.env.DRAFT_TEST_PASSWORD;
 
-if (!password) {
-  throw new Error("DRAFT_TEST_PASSWORD is required.");
+if (!email || !password) {
+  throw new Error("DRAFT_TEST_EMAIL and DRAFT_TEST_PASSWORD are required.");
 }
 
 const privateMarkers = [
@@ -16,6 +17,35 @@ const privateMarkers = [
 
 async function request(path, init) {
   return fetch(new URL(path, baseUrl), { redirect: "manual", ...init });
+}
+
+/**
+ * Signing in now sets several cookies — Supabase's session, chunked across as
+ * many `sb-…-auth-token` cookies as the token needs, plus Draft Mode's bypass —
+ * so the author's identity is a jar, not a single header.
+ */
+function collectCookies(response, jar = new Map()) {
+  for (const header of response.headers.getSetCookie()) {
+    const [pair] = header.split(";", 1);
+    const separator = pair.indexOf("=");
+    jar.set(pair.slice(0, separator).trim(), pair.slice(separator + 1));
+  }
+  return jar;
+}
+
+function cookieHeader(jar) {
+  return [...jar]
+    .filter(([, value]) => value !== "")
+    .map(([name, value]) => `${name}=${value}`)
+    .join("; ");
+}
+
+async function signIn(credentials) {
+  return request("/api/auth", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
 }
 
 async function assertPrivateResponse(path, init) {
@@ -115,25 +145,32 @@ for (const path of ["/", "/tags/AI", "/feed.xml", "/sitemap.xml"]) {
   await assertPublicSurfaceClean(path);
 }
 
-const rejectedLogin = await request("/api/preview", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ password: `${password}-incorrect` }),
+const rejectedPassword = await signIn({
+  email,
+  password: `${password}-incorrect`,
 });
-assert.equal(rejectedLogin.status, 401, "an incorrect password should be rejected");
+assert.equal(rejectedPassword.status, 401, "an incorrect password should be rejected");
 
-const acceptedLogin = await request("/api/preview", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ password }),
-});
-assert.equal(acceptedLogin.status, 200, "the author password should enable preview");
+// The password alone is not the credential any more: it has to belong to
+// AUTHOR_EMAIL, so a valid account on the same project still gets nowhere.
+const rejectedEmail = await signIn({ email: `someone-else+${email}`, password });
+assert.equal(rejectedEmail.status, 401, "a non-author email should be rejected");
 
-const setCookie = acceptedLogin.headers.get("set-cookie") || "";
-const cookie = setCookie.split(";", 1)[0];
-assert.match(cookie, /^__prerender_bypass=.+/, "preview should set an HTTP-only cookie");
-assert.match(setCookie, /HttpOnly/i, "preview cookie should be HTTP-only");
-assert.match(setCookie, /Secure/i, "preview cookie should be secure");
+const acceptedLogin = await signIn({ email, password });
+assert.equal(acceptedLogin.status, 200, "the author credentials should sign in");
+
+const jar = collectCookies(acceptedLogin);
+const cookie = cookieHeader(jar);
+assert.ok(jar.has("__prerender_bypass"), "signing in should enable draft mode");
+assert.ok(
+  [...jar.keys()].some((name) => name.startsWith("sb-")),
+  "signing in should set a Supabase session cookie"
+);
+
+for (const header of acceptedLogin.headers.getSetCookie()) {
+  assert.match(header, /HttpOnly/i, `${header.split("=", 1)[0]} should be HTTP-only`);
+  assert.match(header, /Secure/i, `${header.split("=", 1)[0]} should be secure`);
+}
 
 for (const path of ["/posts/seven-bets", "/drafts"]) {
   const response = await request(path, { headers: { Cookie: cookie } });
@@ -166,16 +203,23 @@ assert.equal(authorAsset.headers.get("content-type"), "image/jpeg");
 assert.match(authorAsset.headers.get("cache-control") || "", /private/);
 assert.match(authorAsset.headers.get("cache-control") || "", /no-store/);
 
-const logout = await request("/api/preview", {
+const logout = await request("/api/auth", {
   method: "DELETE",
   headers: { Cookie: cookie },
 });
 assert.equal(logout.status, 200, "logout should succeed");
-assert.match(
-  logout.headers.get("set-cookie") || "",
-  /__prerender_bypass=;/,
+
+const clearedJar = collectCookies(logout, new Map(jar));
+assert.equal(
+  clearedJar.get("__prerender_bypass"),
+  "",
   "logout should clear the preview cookie"
 );
+for (const [name, value] of clearedJar) {
+  if (name.startsWith("sb-")) {
+    assert.equal(value, "", `logout should clear ${name}`);
+  }
+}
 
 await assertPrivateResponse("/posts/seven-bets");
 

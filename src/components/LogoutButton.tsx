@@ -9,7 +9,7 @@ export default function LogoutButton() {
     setLoggingOut(true);
 
     try {
-      await fetch("/api/preview", { method: "DELETE" });
+      await fetch("/api/auth", { method: "DELETE" });
     } finally {
       window.location.href = "/";
     }

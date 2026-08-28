@@ -12,7 +12,7 @@ export default function DraftBanner() {
   async function exitPreview() {
     setLeaving(true);
     try {
-      await fetch("/api/preview", { method: "DELETE" });
+      await fetch("/api/auth", { method: "DELETE" });
     } finally {
       window.location.href = "/";
     }

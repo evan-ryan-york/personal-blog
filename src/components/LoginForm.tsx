@@ -2,7 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 
+const inputClasses =
+  "w-full rounded-md border border-paper-warm bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50";
+
 export default function LoginForm() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState("");
@@ -13,10 +17,10 @@ export default function LoginForm() {
     setError("");
 
     try {
-      const res = await fetch("/api/preview", {
+      const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
@@ -39,15 +43,26 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <input
-        type="password"
+        type="email"
         required
         autoFocus
+        autoComplete="username"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={status === "loading"}
+        className={inputClasses}
+        style={{ fontFamily: "var(--font-mono)" }}
+      />
+      <input
+        type="password"
+        required
         autoComplete="current-password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         disabled={status === "loading"}
-        className="w-full rounded-md border border-paper-warm bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/50 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent disabled:opacity-50"
+        className={inputClasses}
         style={{ fontFamily: "var(--font-mono)" }}
       />
       <button
