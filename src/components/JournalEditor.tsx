@@ -172,6 +172,10 @@ export default function JournalEditor({
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [uploads, setUploads] = useState(0);
   const [error, setError] = useState("");
+  // The current day's public link, mirrored from whatever the load returned.
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const editorRef = useRef<Editor | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -195,7 +199,7 @@ export default function JournalEditor({
         const result = await response.json().catch(() => ({}));
         setSaveState("error");
         setError(result.error || "Could not save.");
-        return;
+        return false;
       }
 
       setSaveState("saved");
@@ -206,9 +210,11 @@ export default function JournalEditor({
           minute: "2-digit",
         })
       );
+      return true;
     } catch {
       setSaveState("error");
       setError("Could not save.");
+      return false;
     }
   }, []);
 
@@ -252,6 +258,76 @@ export default function JournalEditor({
       }
     }
   }, []);
+
+  /**
+   * Publish the day at an unguessable URL.
+   *
+   * Flushes the pending autosave first: sharing is only defined for a day that
+   * exists, and the author's mental model is "share what I'm looking at", not
+   * "share whatever last reached the server".
+   */
+  const share = useCallback(async () => {
+    const targetDay = activeDay.current;
+    const instance = editorRef.current;
+    if (!targetDay || !instance || sharing) return;
+
+    setSharing(true);
+    setCopied(false);
+    try {
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+        saveTimer.current = null;
+      }
+      if (!(await save(targetDay, instance.getMarkdown()))) return;
+
+      const response = await fetch("/api/journal/share", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entryDay: targetDay }),
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setError(result.error || "Could not create a link.");
+        return;
+      }
+
+      setError("");
+      setShareToken(result.shareToken);
+    } catch {
+      setError("Could not create a link.");
+    } finally {
+      setSharing(false);
+    }
+  }, [save, sharing]);
+
+  const unshare = useCallback(async () => {
+    const targetDay = activeDay.current;
+    if (!targetDay || sharing) return;
+
+    setSharing(true);
+    try {
+      const response = await fetch("/api/journal/share", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entryDay: targetDay }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        setError(result.error || "Could not remove the link.");
+        return;
+      }
+
+      setError("");
+      setShareToken(null);
+      setCopied(false);
+    } catch {
+      setError("Could not remove the link.");
+    } finally {
+      setSharing(false);
+    }
+  }, [sharing]);
 
   const editor = useEditor({
     // The page is server-rendered, so the editor must not render on the server.
@@ -320,6 +396,8 @@ export default function JournalEditor({
     editor.setEditable(false);
     setSaveState("idle");
     setError("");
+    setShareToken(null);
+    setCopied(false);
 
     fetch(`/api/journal?day=${day}`)
       .then((response) => (response.ok ? response.json() : null))
@@ -330,6 +408,7 @@ export default function JournalEditor({
           emitUpdate: false,
         });
         activeDay.current = day;
+        setShareToken(result.shareToken ?? null);
         setSavedAt(null);
         editor.setEditable(true);
         editor.commands.focus("end");
@@ -368,6 +447,22 @@ export default function JournalEditor({
     window.addEventListener("pagehide", flush);
     return () => window.removeEventListener("pagehide", flush);
   }, []);
+
+  // `window` is safe here: `shareToken` is only ever set by a client fetch, so
+  // nothing that reads this renders on the server.
+  const shareUrl = shareToken
+    ? `${window.location.origin}/journal/shared/${shareToken}`
+    : "";
+
+  async function copyShareUrl() {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError("Could not copy — select the link and copy it by hand.");
+    }
+  }
 
   const today = day !== null && day === clientDay;
   const status =
@@ -428,6 +523,48 @@ export default function JournalEditor({
             {error || status}
           </p>
         </header>
+
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {shareToken ? (
+            <>
+              <input
+                readOnly
+                value={shareUrl}
+                onFocus={(event) => event.currentTarget.select()}
+                aria-label="Public link to this entry"
+                className="min-w-0 flex-1 rounded border border-paper-warm bg-paper-warm/40 px-2 py-1 text-xs text-muted"
+                style={{ fontFamily: "var(--font-mono)" }}
+              />
+              <button
+                type="button"
+                onClick={copyShareUrl}
+                className="rounded border border-paper-warm px-2 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                {copied ? "Copied" : "Copy"}
+              </button>
+              <button
+                type="button"
+                onClick={unshare}
+                disabled={sharing}
+                className="rounded border border-paper-warm px-2 py-1 text-xs text-muted transition-colors hover:border-red-600 hover:text-red-600 disabled:opacity-50"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                Make private
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={share}
+              disabled={sharing || !day}
+              className="rounded border border-paper-warm px-2 py-1 text-xs text-muted transition-colors hover:border-accent hover:text-accent disabled:opacity-50"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {sharing ? "Creating link…" : "Create public link"}
+            </button>
+          )}
+        </div>
 
         {editor && <Toolbar editor={editor} />}
         <EditorContent editor={editor} />

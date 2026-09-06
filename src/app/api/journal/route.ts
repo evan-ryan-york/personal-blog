@@ -33,6 +33,9 @@ export async function GET(request: Request) {
     entryDay: day,
     body: entry?.body ?? "",
     updatedAt: entry?.updatedAt ?? null,
+    // Carried on the load so the Share control shows the day's real state as
+    // the author pages back and forth, without a second round trip per day.
+    shareToken: entry?.shareToken ?? null,
   });
 }
 
