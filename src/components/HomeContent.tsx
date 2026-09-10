@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
+import WorkingOn from "@/components/WorkingOn";
 
 type Tab = "posts" | "about";
 
@@ -201,6 +202,8 @@ export default function HomeContent({
               )}
             </div>
           </section>
+
+          <WorkingOn />
         </>
       )}
 
