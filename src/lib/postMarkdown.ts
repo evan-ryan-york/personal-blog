@@ -1,6 +1,13 @@
 import type { Post } from "./posts";
+import { authorName, postUrl, siteName, siteUrl } from "./site";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.io";
+// Deliberately not imported from `./posts`: that module reads the filesystem
+// at import time, and two of the post layouts that render a "copy this post"
+// button are client components. A type-only import of `Post` erases; a value
+// import would pull `fs` into the browser bundle.
+function lastModified(post: Post): string {
+  return post.frontmatter.updated || post.frontmatter.date;
+}
 
 // A post body is Markdown mixed with that post's own JSX components. The
 // clipboard wants plain Markdown, so every component carrying prose is
@@ -104,6 +111,123 @@ const wagers: Rule = (source) =>
       [...entries.matchAll(/"([^"]*)"/g)].map(([, item]) => `- ${item}`).join("\n")
   );
 
+/* --------------------------------------------------------------------------
+ * The other three posts.
+ *
+ * `stripComponents` below keeps anything a component wraps, so prose survives
+ * on its own. What it cannot save is content living in *props* — every
+ * `title=`, `number=`, `label=` and `caption=` in the post. Those are headings
+ * and captions the reader sees, so without a rule per component the Markdown
+ * came out as unlabelled walls of text. One rule each, same shape as above.
+ * ----------------------------------------------------------------------- */
+
+/** `<FlowStep number title>` — the sense/interpret/grow loop. */
+const flowStep: Rule = (source) =>
+  source.replace(
+    /<FlowStep\b([^>]*)>([\s\S]*?)<\/FlowStep>/g,
+    (_match, attrs: string, body: string) =>
+      `### ${attr(attrs, "number")}. ${attr(attrs, "title")}\n\n${body.trim()}`
+  );
+
+/** `<BarrierCard label title>` — the open questions. */
+const barrierCard: Rule = (source) =>
+  source.replace(
+    /<BarrierCard\b([^>]*)>([\s\S]*?)<\/BarrierCard>/g,
+    (_match, attrs: string, body: string) =>
+      `### ${attr(attrs, "title")}\n\n${body.trim()}`
+  );
+
+/** `<BlueprintItem number title>` — the numbered design principles. */
+const blueprintItem: Rule = (source) =>
+  source.replace(
+    /<BlueprintItem\b([^>]*)>([\s\S]*?)<\/BlueprintItem>/g,
+    (_match, attrs: string, body: string) =>
+      `### ${attr(attrs, "number")}. ${attr(attrs, "title")}\n\n${body.trim()}`
+  );
+
+/** `<PlatformSection title>` — the planks of the platform. */
+const platformSection: Rule = (source) =>
+  source.replace(
+    /<PlatformSection\b([^>]*)>([\s\S]*?)<\/PlatformSection>/g,
+    (_match, attrs: string, body: string) =>
+      `### ${attr(attrs, "title")}\n\n${body.trim()}`
+  );
+
+/** `<Scene label>` — the narrative interlude. */
+const scene: Rule = (source) =>
+  source.replace(
+    /<Scene\b([^>]*)>([\s\S]*?)<\/Scene>/g,
+    (_match, attrs: string, body: string) => {
+      const label = attr(attrs, "label");
+      return label ? `### ${label}\n\n${body.trim()}` : body.trim();
+    }
+  );
+
+/** Set-apart emphasis blocks become blockquotes, which is what they are. */
+const blockquoteComponents: Rule = (source) =>
+  source.replace(
+    /<(KeyBox|Callout)\b[^>]*>([\s\S]*?)<\/\1>/g,
+    (_match, _name: string, body: string) =>
+      body
+        .trim()
+        .split("\n")
+        .map((line) => (line.trim() ? `> ${line.trim()}` : ">"))
+        .join("\n")
+  );
+
+/** `<Bullet>` inside `<BulletList>` — a list that was never a list in source. */
+const bullet: Rule = (source) =>
+  source.replace(
+    /<Bullet>([\s\S]*?)<\/Bullet>/g,
+    (_match, text: string) => `- ${tidy(text)}`
+  );
+
+/**
+ * Footnotes. The refs become real Markdown footnote references and the
+ * definitions become real definitions, so a reader — or a model — can still
+ * follow a claim to its source once the post leaves the page.
+ */
+const footnoteRef: Rule = (source) =>
+  source.replace(/<FootnoteRef\s+id=\{(\d+)\}\s*\/>/g, "[^$1]");
+
+const footnote: Rule = (source) =>
+  source.replace(
+    /<Footnote\s+id=\{(\d+)\}>([\s\S]*?)<\/Footnote>/g,
+    (_match, id: string, text: string) => `[^${id}]: ${tidy(text)}`
+  );
+
+const footnotesHeading: Rule = (source) =>
+  source.replace(/<Footnotes>/g, "## Notes\n").replace(/<\/Footnotes>/g, "");
+
+/**
+ * `<QuadrantChart />` is drawn into a canvas, so — like `<CynefinPlate />`
+ * above — there is no text to keep and no image to link. Its four quadrants
+ * are the argument of the essay, so they are restated here or they are gone.
+ */
+const QUADRANT_ROWS: [string, string][] = [
+  ["Republicans", "High abundance agenda, low equitable distribution. Free market theory, protectionist reality."],
+  ["Progressives today", "Low abundance agenda, high equitable distribution. Moral clarity, no engine."],
+  ["The soft center", "Low on both. No conviction on either front."],
+  ["The progressive abundance agenda", "High on both — the empty quadrant. Build everything. Share everything."],
+];
+
+const quadrantChart: Rule = (source) =>
+  source.replace(/<QuadrantChart\b[^>]*\/>/g, () =>
+    [
+      "Four positions, plotted against an abundance agenda and equitable distribution:",
+      "",
+      ...QUADRANT_ROWS.map(([name, note]) => `- **${name}.** ${note}`),
+    ].join("\n")
+  );
+
+/** `<PostImage src alt caption />` -> a real Markdown image plus its caption. */
+const postImage: Rule = (source) =>
+  source.replace(/<PostImage\b([^>]*?)\/>/g, (_match, attrs: string) => {
+    const image = `![${attr(attrs, "alt")}](${attr(attrs, "src")})`;
+    const caption = attr(attrs, "caption");
+    return caption ? `${image}\n\n*${caption}*` : image;
+  });
+
 // Whatever the rules above missed: drop component tags, keep their contents.
 // Only capitalized names match, so any literal HTML in the prose survives.
 const stripComponents: Rule = (source) =>
@@ -117,6 +241,7 @@ const collapseBlankLines: Rule = (source) =>
   source.replace(/\n{3,}/g, "\n\n").trim();
 
 const RULES: Rule[] = [
+  // seven-bets
   theSeven,
   betHero,
   cynefinPlate,
@@ -124,6 +249,21 @@ const RULES: Rule[] = [
   fullArgument,
   closing,
   wagers,
+  // the-living-product, progressive-agenda, plane-never-flying
+  flowStep,
+  barrierCard,
+  blueprintItem,
+  platformSection,
+  scene,
+  bullet,
+  quadrantChart,
+  postImage,
+  footnoteRef,
+  footnote,
+  footnotesHeading,
+  // Must follow the rules above: those match specific tags, this one reaches
+  // inside any component that is still standing.
+  blockquoteComponents,
   stripComponents,
   absolutizeLinks,
   collapseBlankLines,
@@ -133,21 +273,39 @@ export function postBodyToMarkdown(content: string): string {
   return RULES.reduce((source, rule) => rule(source), content);
 }
 
-/** The whole post as Markdown: title, byline, TL;DR, then the body. */
+/**
+ * The whole post as Markdown: title, byline, tags, TL;DR, then the body.
+ *
+ * Served at `/posts/<slug>.md` and concatenated into `/llms-full.txt`. The
+ * header is deliberately verbose — when a model retrieves this file it has
+ * nothing else to go on, so the text has to say who wrote it, when, and where
+ * it came from without relying on any surrounding page.
+ */
 export function postToMarkdown(post: Post): string {
-  const { title, description, date, tldr } = post.frontmatter;
+  const { title, description, date, tags, tldr } = post.frontmatter;
 
-  const published = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: "UTC",
-  });
+  const format = (value: string) =>
+    new Date(value).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+
+  const published = format(date);
+  const modified = lastModified(post);
+
+  const meta = [
+    `${authorName} · ${published} · ${post.readingTime}`,
+    modified !== date ? `Updated ${format(modified)}` : null,
+    tags?.length ? `Topics: ${tags.join(", ")}` : null,
+    `Source: ${postUrl(post.slug)}`,
+  ].filter(Boolean);
 
   const parts = [
     `# ${title}`,
     `*${description}*`,
-    `Ryan York · ${published} · ${post.readingTime}\n${siteUrl}/posts/${post.slug}`,
+    meta.join("\n"),
   ];
 
   if (tldr?.length) {
@@ -155,6 +313,7 @@ export function postToMarkdown(post: Post): string {
   }
 
   parts.push("---", postBodyToMarkdown(post.content));
+  parts.push("---", `From ${siteName} — ${siteUrl}`);
 
   return `${parts.join("\n\n")}\n`;
 }

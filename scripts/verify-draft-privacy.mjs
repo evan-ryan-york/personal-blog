@@ -85,6 +85,11 @@ await assertPrivateResponse("/posts/seven-bets");
 await assertPrivateResponse("/posts/seven-bets", {
   headers: { RSC: "1" },
 });
+
+// The Markdown twin is a second door onto exactly the same text. It is easy to
+// forget it exists, which is the reason it is checked here.
+await assertPrivateResponse("/posts/seven-bets.md");
+await assertPrivateResponse("/api/posts/seven-bets/markdown");
 await assertPrivateResponse("/drafts");
 await assertPrivateResponse("/journal");
 
@@ -141,7 +146,18 @@ for (const assetPath of [
   assert.equal(response.status, 404, `${assetPath} should be private`);
 }
 
-for (const path of ["/", "/tags/AI", "/feed.xml", "/sitemap.xml"]) {
+// Every surface that enumerates the site has to enumerate only published work
+// — the feeds and the two files written for language models included.
+for (const path of [
+  "/",
+  "/tags/AI",
+  "/feed.xml",
+  "/feed.atom",
+  "/feed.json",
+  "/sitemap.xml",
+  "/llms.txt",
+  "/llms-full.txt",
+]) {
   await assertPublicSurfaceClean(path);
 }
 
@@ -172,7 +188,7 @@ for (const header of acceptedLogin.headers.getSetCookie()) {
   assert.match(header, /Secure/i, `${header.split("=", 1)[0]} should be secure`);
 }
 
-for (const path of ["/posts/seven-bets", "/drafts"]) {
+for (const path of ["/posts/seven-bets", "/posts/seven-bets.md", "/drafts"]) {
   const response = await request(path, { headers: { Cookie: cookie } });
   assert.equal(response.status, 200, `${path} should be visible to the author`);
   assert.match(await response.text(), /Seven Bets/, `${path} should contain the draft`);
