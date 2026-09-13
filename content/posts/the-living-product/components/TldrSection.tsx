@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-export default function TldrSection() {
+export default function TldrSection({
+  items,
+  markdown,
+}: {
+  items: string[];
+  markdown: string;
+}) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -70,13 +76,10 @@ export default function TldrSection() {
           {/* Copy blog button */}
           <button
             onClick={() => {
-              const prose = document.querySelector(".living-product-prose");
-              if (prose) {
-                navigator.clipboard.writeText(prose.textContent || "").then(() => {
+              navigator.clipboard.writeText(markdown).then(() => {
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 });
-              }
             }}
             style={{
               display: "inline-flex",
@@ -169,18 +172,21 @@ export default function TldrSection() {
                     gap: "0.6rem",
                   }}
                 >
-                  <li>
-                    <strong style={{ fontWeight: 500 }}>The shift: </strong> The future is software that behaves less like an inert tool and more like an organism. The source code no longer defines what the product is &mdash; it defines the rules by which the product can grow.
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 500 }}>The framework:</strong> Three concepts carry the model. <em>DNA</em> (rules that govern growth), <em>Environment</em> (what the system learns from &mdash; and what it is taught to ignore), and <em>Purpose</em> (what the system is ultimately being directed toward &mdash; where values enter the system).
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 500 }}>The loop: </strong> Sense, interpret, grow, learn, heal &amp; prune &mdash; a continuous cycle of closed-loop adaptation. Generation is not the hard part for long. Judgment is.
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 500 }}>The human role:</strong> Part geneticist, part gardener, part moral authority. The organism will be very good at optimization. It will not be very good at meaning. That is why the human job gets bigger, not smaller.
-                  </li>
+                  {items.map((item) => {
+                    // Bullets are stored as "Label: text" in frontmatter; the
+                    // label is the part this design sets in bold.
+                    const split = item.indexOf(": ");
+                    const label = split > 0 ? item.slice(0, split + 1) : null;
+                    const body = split > 0 ? item.slice(split + 2) : item;
+                    return (
+                      <li key={item}>
+                        {label && (
+                          <strong style={{ fontWeight: 500 }}>{label} </strong>
+                        )}
+                        {body}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 {/* Collapse arrow */}

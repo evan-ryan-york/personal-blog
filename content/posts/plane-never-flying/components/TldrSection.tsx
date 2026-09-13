@@ -19,7 +19,13 @@ const PILL_BASE: React.CSSProperties = {
   transition: "all 0.2s ease",
 };
 
-export default function TldrSection() {
+export default function TldrSection({
+  items,
+  markdown,
+}: {
+  items: string[];
+  markdown: string;
+}) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -74,15 +80,10 @@ export default function TldrSection() {
 
             <button
               onClick={() => {
-                const prose = document.querySelector(".plane-prose");
-                if (prose) {
-                  navigator.clipboard
-                    .writeText(prose.textContent || "")
-                    .then(() => {
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 2000);
-                    });
-                }
+                navigator.clipboard.writeText(markdown).then(() => {
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                });
               }}
               style={PILL_BASE}
               onMouseEnter={hoverOn}
@@ -166,33 +167,21 @@ export default function TldrSection() {
                     gap: "0.7rem",
                   }}
                 >
-                  <li>
-                    <strong style={{ fontWeight: 600 }}>The diagnosis: </strong>
-                    One adult holding thirty children at one pace through one sequence
-                    in one box &mdash; while that box is also asked to be clinic,
-                    cafeteria, and counselor. A century of learning science says it
-                    can&rsquo;t work, and flat scores since 1970 prove it.
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 600 }}>Why it persists: </strong>
-                    Not conviction but resignation. Everyone inside believes the power
-                    to change it lives one rung up the ladder &mdash; until the ladder
-                    runs out and you find it was leaning against nothing.
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 600 }}>The redesign: </strong>
-                    Reclaim the money and the time. Children learn embedded in real
-                    work, outdoors, inside relationships, aimed at agency &mdash; with
-                    AI quietly handling the mechanics so the human hours go back to
-                    childhood, and giving every child the patient one-to-one tutoring
-                    that was always the privilege of the wealthy.
-                  </li>
-                  <li>
-                    <strong style={{ fontWeight: 600 }}>The stakes: </strong>
-                    The same technology could perfect indoctrination instead. The good
-                    version is not the default. It has to be built on purpose, by
-                    builders and educators who want liberation, not engagement.
-                  </li>
+                  {items.map((item) => {
+                    // Bullets are stored as "Label: text" in frontmatter; the
+                    // label is the part this design sets in bold.
+                    const split = item.indexOf(": ");
+                    const label = split > 0 ? item.slice(0, split + 1) : null;
+                    const body = split > 0 ? item.slice(split + 2) : item;
+                    return (
+                      <li key={item}>
+                        {label && (
+                          <strong style={{ fontWeight: 600 }}>{label} </strong>
+                        )}
+                        {body}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 <div

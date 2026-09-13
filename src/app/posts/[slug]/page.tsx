@@ -2,11 +2,16 @@ import { notFound } from "next/navigation";
 import {
   getPublicPostSlugs,
   getPostBySlug,
+  getRelatedPosts,
   postHasCustomLayout,
 } from "@/lib/posts";
 import { isPreviewEnabled } from "@/lib/preview";
 import { renderMDX } from "@/lib/mdx";
-import { generatePostMetadata, generateArticleJsonLd } from "@/lib/seo";
+import {
+  generatePostMetadata,
+  generateArticleJsonLd,
+  jsonLdScript,
+} from "@/lib/seo";
 import DefaultPostLayout from "@/components/DefaultPostLayout";
 import DraftBanner from "@/components/DraftBanner";
 
@@ -169,6 +174,7 @@ const postLayoutMap: Record<
   string,
   ComponentType<{
     post: NonNullable<ReturnType<typeof getPostBySlug>>;
+    related: NonNullable<ReturnType<typeof getPostBySlug>>[];
     children: React.ReactNode;
   }>
 > = {
@@ -218,6 +224,9 @@ export default async function PostPage({ params }: { params: Params }) {
   const components = postComponentsMap[slug] || {};
   const content = await renderMDX(post.content, components);
   const jsonLd = generateArticleJsonLd(post);
+  // Drafts get no related block: it would link an unpublished post from
+  // nowhere, and the ranking only ever considers published work anyway.
+  const related = isDraft ? [] : getRelatedPosts(post);
 
   if (postHasCustomLayout(slug)) {
     const CustomLayout = postLayoutMap[slug];
@@ -227,9 +236,11 @@ export default async function PostPage({ params }: { params: Params }) {
           {isDraft && <DraftBanner />}
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            dangerouslySetInnerHTML={jsonLdScript(jsonLd)}
           />
-          <CustomLayout post={post}>{content}</CustomLayout>
+          <CustomLayout post={post} related={related}>
+            {content}
+          </CustomLayout>
           <div className="mx-auto max-w-3xl px-6 md:px-8">
             <CommentSection slug={slug} />
           </div>
@@ -243,9 +254,11 @@ export default async function PostPage({ params }: { params: Params }) {
       {isDraft && <DraftBanner />}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={jsonLdScript(jsonLd)}
       />
-      <DefaultPostLayout post={post}>{content}</DefaultPostLayout>
+      <DefaultPostLayout post={post} related={related}>
+        {content}
+      </DefaultPostLayout>
     </>
   );
 }

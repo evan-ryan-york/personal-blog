@@ -3,17 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Post } from "@/lib/posts";
+import RelatedPosts from "@/components/RelatedPosts";
+import { planeFonts } from "@/lib/postFonts";
+import { postToMarkdown } from "@/lib/postMarkdown";
 import TldrSection from "./components/TldrSection";
 import GridBackground from "./components/GridBackground";
-
-function FontLoader() {
-  return (
-    <link
-      href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-  );
-}
 
 function ReadingProgress() {
   const [progress, setProgress] = useState(0);
@@ -48,14 +42,15 @@ function ReadingProgress() {
 
 export default function PlaneNeverFlyingLayout({
   post,
+  related,
   children,
 }: {
   post: Post;
+  related: Post[];
   children: React.ReactNode;
 }) {
   return (
-    <article className="pf-post">
-      <FontLoader />
+    <article className={`pf-post ${planeFonts}`}>
       <ReadingProgress />
       <GridBackground />
 
@@ -189,12 +184,14 @@ export default function PlaneNeverFlyingLayout({
               animation: "fadeUp 0.8s ease forwards 0.7s",
             }}
           >
-            {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              timeZone: "UTC",
-            })}{" "}
+            <time dateTime={post.frontmatter.date}>
+              {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>{" "}
             &middot; {post.readingTime}
           </div>
         </div>
@@ -225,7 +222,10 @@ export default function PlaneNeverFlyingLayout({
       </header>
 
       {/* TL;DR */}
-      <TldrSection />
+      <TldrSection
+        items={post.frontmatter.tldr ?? []}
+        markdown={postToMarkdown(post)}
+      />
 
       {/* Content */}
       <div style={{ background: "transparent", width: "100%" }}>
@@ -238,6 +238,14 @@ export default function PlaneNeverFlyingLayout({
       </div>
 
       {/* Back link */}
+      {/* Every post used to end in a back link and nothing else. */}
+      <RelatedPosts
+        posts={related}
+        slug={post.slug}
+        theme={{ rule: "var(--pf-rule, #d2cab2)", muted: "var(--pf-muted, #6b6b6b)", heading: "var(--pf-ink, #0a0a0a)", accent: "var(--pf-teal, #1c7077)", displayFont: "var(--pf-font-display)", bodyFont: "var(--pf-font-label)" }}
+        maxWidth={720}
+      />
+
       <div
         className="px-6 py-8 md:px-10"
         style={{

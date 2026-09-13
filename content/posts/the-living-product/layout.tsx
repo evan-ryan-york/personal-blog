@@ -1,12 +1,16 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
+import RelatedPosts from "@/components/RelatedPosts";
+import { postToMarkdown } from "@/lib/postMarkdown";
 import TldrSection from "./components/TldrSection";
 
 export default function LivingProductLayout({
   post,
+  related,
   children,
 }: {
   post: Post;
+  related: Post[];
   children: React.ReactNode;
 }) {
   return (
@@ -96,6 +100,28 @@ export default function LivingProductLayout({
           >
             {post.frontmatter.description}
           </p>
+          {/* This post was the only one with no dateline at all, which left
+              both readers and crawlers with nothing to date it by. */}
+          <div
+            className="mt-7 opacity-0"
+            style={{
+              fontSize: "0.78rem",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--lp-dark-muted, #8a8278)",
+              animation: "fadeUp 0.8s ease forwards 0.75s",
+            }}
+          >
+            <time dateTime={post.frontmatter.date}>
+              {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>{" "}
+            &middot; {post.readingTime}
+          </div>
         </div>
         {/* Scroll cue */}
         <div
@@ -123,7 +149,10 @@ export default function LivingProductLayout({
       </section>
 
       {/* TL;DR */}
-      <TldrSection />
+      <TldrSection
+        items={post.frontmatter.tldr ?? []}
+        markdown={postToMarkdown(post)}
+      />
 
       {/* Content */}
       <div style={{ background: "var(--lp-paper, #f6f3ee)", width: "100%" }}>
@@ -139,6 +168,14 @@ export default function LivingProductLayout({
       </div>
 
       {/* Back link */}
+      {/* Every post used to end in a back link and nothing else. */}
+      <RelatedPosts
+        posts={related}
+        slug={post.slug}
+        theme={{ rule: "var(--lp-divider, #d9d3ca)", muted: "var(--lp-muted, #8a8278)", heading: "var(--lp-ink, #2c2520)", accent: "var(--lp-accent, #c45d3e)", displayFont: "var(--font-display)", bodyFont: "var(--font-mono)" }}
+        maxWidth={720}
+      />
+
       <div
         className="border-t px-6 py-8 md:px-8"
         style={{

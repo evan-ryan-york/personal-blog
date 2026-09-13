@@ -1,12 +1,15 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
 import CommentSection from "@/components/CommentSection";
+import RelatedPosts from "@/components/RelatedPosts";
 
 export default function DefaultPostLayout({
   post,
+  related = [],
   children,
 }: {
   post: Post;
+  related?: Post[];
   children: React.ReactNode;
 }) {
   return (
@@ -63,6 +66,17 @@ export default function DefaultPostLayout({
         </header>
 
         <div className="animate-fade-up delay-2 prose-blog">{children}</div>
+
+        <RelatedPosts
+          posts={related}
+          slug={post.slug}
+          theme={{
+            rule: "var(--color-paper-warm, #e7e1d7)",
+            muted: "var(--color-muted, #6b7280)",
+            heading: "var(--color-ink, #1a1a1a)",
+            accent: "var(--color-accent, #c44d2b)",
+          }}
+        />
 
         <CommentSection slug={post.slug} />
 

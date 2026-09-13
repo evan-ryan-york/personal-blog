@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Post } from "@/lib/posts";
+import RelatedPosts from "@/components/RelatedPosts";
+import { progressiveAgendaFonts } from "@/lib/postFonts";
 import ScrollArt from "./components/ScrollArt";
+import TldrSection from "./components/TldrSection";
+import { postToMarkdown } from "@/lib/postMarkdown";
 
 // Design tokens for this post. Applied statically here as the single source of
 // default fonts + palette (previously set at runtime by the Design Explorer).
 const PA_DESIGN_TOKENS = {
-  "--pa-font-display": "'Instrument Serif', Georgia, serif",
-  "--pa-font-body": "'Inter', system-ui, sans-serif",
+  "--pa-font-display": "var(--font-instrument-serif), Georgia, serif",
+  "--pa-font-body": "var(--font-inter), system-ui, sans-serif",
   "--pa-ink": "#0f0f0f",
   "--pa-accent": "#1e3a5f",
   "--pa-secondary": "#b91c1c",
@@ -22,10 +26,6 @@ const PA_DESIGN_TOKENS = {
 function FontLoader() {
   return (
     <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Karla:ital,wght@0,200..800;1,200..800&family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-        rel="stylesheet"
-      />
     </>
   );
 }
@@ -62,13 +62,15 @@ function ReadingProgress() {
 
 export default function ProgressiveAgendaLayout({
   post,
+  related,
   children,
 }: {
   post: Post;
+  related: Post[];
   children: React.ReactNode;
 }) {
   return (
-    <article className="pa-post" style={PA_DESIGN_TOKENS}>
+    <article className={`pa-post ${progressiveAgendaFonts}`} style={PA_DESIGN_TOKENS}>
       <FontLoader />
       <ReadingProgress />
 
@@ -258,12 +260,14 @@ export default function ProgressiveAgendaLayout({
               animation: "fadeUp 0.8s ease forwards 0.65s",
             }}
           >
-            {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              timeZone: "UTC",
-            })}{" "}
+            <time dateTime={post.frontmatter.date}>
+              {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>{" "}
             &middot; {post.readingTime}
           </div>
         </div>
@@ -309,6 +313,10 @@ export default function ProgressiveAgendaLayout({
               paddingTop: "3rem",
             }}
           >
+            <TldrSection
+              items={post.frontmatter.tldr ?? []}
+              markdown={postToMarkdown(post)}
+            />
             {children}
           </div>
 
@@ -326,6 +334,14 @@ export default function ProgressiveAgendaLayout({
       </div>
 
       {/* Back link */}
+      {/* Every post used to end in a back link and nothing else. */}
+      <RelatedPosts
+        posts={related}
+        slug={post.slug}
+        theme={{ rule: "var(--pa-divider, #e5e7eb)", muted: "var(--pa-muted, #6b7280)", heading: "var(--pa-ink, #0f0f0f)", accent: "var(--pa-accent, #1e3a5f)", displayFont: "var(--pa-font-display)", bodyFont: "var(--pa-font-body)" }}
+        maxWidth={820}
+      />
+
       <div
         className="px-6 py-8 md:px-10"
         style={{

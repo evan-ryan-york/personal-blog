@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Post } from "@/lib/posts";
+import RelatedPosts from "@/components/RelatedPosts";
+import { sevenBetsFonts } from "@/lib/postFonts";
 import { postToMarkdown } from "@/lib/postMarkdown";
 import PostSummary from "./components/PostSummary";
 
@@ -18,32 +20,24 @@ const SB_TOKENS = {
   "--sb-faint": "#6D7484",
   "--sb-fainter": "#5B6274",
   "--sb-rule": "#262C38",
-  "--sb-font-display": "'Cormorant Garamond', Georgia, serif",
-  "--sb-font-body": "'EB Garamond', Georgia, serif",
-  "--sb-font-mono": "'Space Mono', ui-monospace, monospace",
+  "--sb-font-display": "var(--font-cormorant), Georgia, serif",
+  "--sb-font-body": "var(--font-eb-garamond), Georgia, serif",
+  "--sb-font-mono": "var(--font-space-mono), ui-monospace, monospace",
 } as React.CSSProperties;
 
 export default function SevenBetsLayout({
   post,
+  related,
   children,
 }: {
   post: Post;
+  related: Post[];
   children: React.ReactNode;
 }) {
   const tldr = post.frontmatter.tldr ?? [];
 
   return (
-    <article className="sb-post" style={SB_TOKENS}>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin="anonymous"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap"
-        rel="stylesheet"
-      />
+    <article className={`sb-post ${sevenBetsFonts}`} style={SB_TOKENS}>
 
       {/* Hero — engraved celestial plate */}
       <header className="sb-hero">
@@ -69,7 +63,6 @@ export default function SevenBetsLayout({
             objectFit: "cover",
             objectPosition: "center",
           }}
-          unoptimized
         />
         {/* Brass glow, kept soft so the art carries the frame */}
         <div
@@ -112,12 +105,14 @@ export default function SevenBetsLayout({
             className="sb-hero-meta opacity-0"
             style={{ animation: "fadeUp 0.8s ease forwards 0.5s" }}
           >
-            {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              timeZone: "UTC",
-            })}{" "}
+            <time dateTime={post.frontmatter.date}>
+              {new Date(post.frontmatter.date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>{" "}
             &middot; {post.readingTime}
           </div>
         </div>
@@ -132,6 +127,21 @@ export default function SevenBetsLayout({
           {children}
         </div>
       </div>
+
+      {/* Every post used to end in a back link and nothing else. */}
+      <RelatedPosts
+        posts={related}
+        slug={post.slug}
+        theme={{
+          rule: "var(--sb-rule)",
+          muted: "var(--sb-muted)",
+          heading: "var(--sb-heading)",
+          accent: "var(--sb-gold)",
+          displayFont: "var(--sb-font-display)",
+          bodyFont: "var(--sb-font-mono)",
+        }}
+        maxWidth={820}
+      />
 
       <div className="sb-footer">
         <Link href="/" className="sb-back">
