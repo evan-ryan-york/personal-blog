@@ -27,6 +27,15 @@ export default async function Footer() {
             education.
           </p>
           <p className="mt-4 text-sm text-muted">
+            <Link
+              href="/about"
+              className="transition-colors hover:text-accent"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              About
+            </Link>
+          </p>
+          <p className="mt-2 text-sm text-muted">
             <a
               href="mailto:ryan@ryanyork.io"
               className="transition-colors hover:text-accent"

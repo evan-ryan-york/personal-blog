@@ -31,12 +31,25 @@ export interface PostFrontmatter {
   title: string;
   description: string;
   date: string;
+  /**
+   * When the post was last meaningfully revised. Absent until a post is
+   * actually edited — `dateModified` in the structured data falls back to
+   * `date`, and claiming a revision that never happened is worse than
+   * claiming none.
+   */
+  updated?: string;
   tags: string[];
   ogImage?: string;
   layout?: "custom";
   status?: PostStatus;
   /** Short summary bullets, shown above the post and included in its Markdown. */
   tldr?: string[];
+  /**
+   * Questions the post answers outright, in its own words. Emitted as
+   * `FAQPage` structured data, so every entry must correspond to something
+   * the reader can find on the page.
+   */
+  faq?: { question: string; answer: string }[];
 }
 
 export interface Post {
@@ -46,6 +59,8 @@ export interface Post {
   status: PostStatus;
   content: string;
   readingTime: string;
+  /** Words of prose, for `wordCount` in the article's structured data. */
+  wordCount: number;
 }
 
 function readAllPosts(): Post[] {
@@ -101,7 +116,13 @@ export function getPostBySlug(slug: string): Post | null {
     status: resolveStatus(frontmatter),
     content,
     readingTime: stats.text,
+    wordCount: stats.words,
   };
+}
+
+/** The revision date if the post has one, else the date it went up. */
+export function lastModifiedOf(post: Post): string {
+  return post.frontmatter.updated || post.frontmatter.date;
 }
 
 export function getAllTags(query: PostQuery = {}): Map<string, number> {
@@ -139,4 +160,30 @@ export function postHasComponents(slug: string): boolean {
     fs.existsSync(componentsDir) &&
     fs.statSync(componentsDir).isDirectory()
   );
+}
+
+/**
+ * Other posts worth reading after this one, best first.
+ *
+ * Ranked by how many tags they share, then by recency. Four essays that all
+ * circle AI, policy, education and product had no links between them at all,
+ * which left every post a dead end for a reader and an orphan for a crawler.
+ */
+export function getRelatedPosts(post: Post, limit = 2): Post[] {
+  const tags = new Set(post.frontmatter.tags);
+
+  return getAllPosts()
+    .filter((candidate) => candidate.slug !== post.slug)
+    .map((candidate) => ({
+      candidate,
+      shared: candidate.frontmatter.tags.filter((tag) => tags.has(tag)).length,
+    }))
+    .sort(
+      (a, b) =>
+        b.shared - a.shared ||
+        new Date(b.candidate.frontmatter.date).getTime() -
+          new Date(a.candidate.frontmatter.date).getTime()
+    )
+    .slice(0, limit)
+    .map(({ candidate }) => candidate);
 }

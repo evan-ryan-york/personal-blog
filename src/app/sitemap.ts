@@ -1,33 +1,34 @@
 import type { MetadataRoute } from "next";
-import { getAllPosts, getAllTags } from "@/lib/posts";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.io";
+import { getAllPosts, getAllTags, lastModifiedOf } from "@/lib/posts";
+import { siteUrl, tagUrl, postUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
   const tags = getAllTags();
 
+  // The newest post is the best proxy for when the site itself last changed.
+  const newest = posts[0] ? new Date(lastModifiedOf(posts[0])) : new Date();
+
   const postUrls = posts.map((post) => ({
-    url: `${siteUrl}/posts/${post.slug}`,
-    lastModified: new Date(post.frontmatter.date),
-    changeFrequency: "monthly" as const,
-    priority: 0.8,
+    url: postUrl(post.slug),
+    lastModified: new Date(lastModifiedOf(post)),
+    priority: 0.9,
+    // Declaring the post's art here is what gets it considered for image
+    // search, which the page's OG tag alone does not do.
+    ...(post.frontmatter.ogImage
+      ? { images: [`${siteUrl}${post.frontmatter.ogImage}`] }
+      : {}),
   }));
 
   const tagUrls = Array.from(tags.keys()).map((tag) => ({
-    url: `${siteUrl}/tags/${encodeURIComponent(tag)}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
+    url: tagUrl(tag),
+    lastModified: newest,
     priority: 0.5,
   }));
 
   return [
-    {
-      url: siteUrl,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
+    { url: siteUrl, lastModified: newest, priority: 1 },
+    { url: `${siteUrl}/about`, lastModified: newest, priority: 0.7 },
     ...postUrls,
     ...tagUrls,
   ];

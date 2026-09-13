@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bitter, Fira_Code } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { generateSiteMetadata } from "@/lib/seo";
+import { generateSiteMetadata, generateSiteJsonLd, jsonLdScript } from "@/lib/seo";
 import Footer from "@/components/Footer";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import "./globals.css";
@@ -40,6 +40,12 @@ export default function RootLayout({
         className="flex min-h-dvh flex-col"
         style={{ fontFamily: "var(--font-body)" }}
       >
+        {/* Who wrote this site and what it is — stated once, on every page, so
+            the per-page graphs below can reference it by @id. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={jsonLdScript(generateSiteJsonLd())}
+        />
         <PostHogProvider>
           <main className="flex-1">{children}</main>
           <Footer />

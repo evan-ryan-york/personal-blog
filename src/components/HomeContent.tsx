@@ -5,8 +5,6 @@ import Link from "next/link";
 import type { Post } from "@/lib/posts";
 import WorkingOn from "@/components/WorkingOn";
 
-type Tab = "posts" | "about";
-
 interface HomeContentProps {
   posts: Post[];
   tags: [string, number][];
@@ -19,7 +17,6 @@ export default function HomeContent({
   tags,
   preview = false,
 }: HomeContentProps) {
-  const [tab, setTab] = useState<Tab>("posts");
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
   const toggleTag = (tag: string) => {
@@ -38,7 +35,7 @@ export default function HomeContent({
 
   const filteredPosts = hasFilter
     ? posts.filter((post) =>
-        post.frontmatter.tags.some((t) => selectedTags.has(t))
+        post.frontmatter.tags.some((t) => selectedTags.has(t)),
       )
     : posts;
 
@@ -57,18 +54,17 @@ export default function HomeContent({
         className="flex justify-center gap-8 px-6 pt-8 md:px-8"
         style={{ fontFamily: "var(--font-mono)" }}
       >
-        {(["posts", "about"] as const).map((t) => (
-          <span
-            key={t}
-            onClick={() => setTab(t)}
-            className={`
-              text-xs uppercase tracking-widest cursor-pointer transition-colors
-              ${tab === t ? "text-ink border-b border-ink pb-1" : "text-muted hover:text-ink pb-1"}
-            `}
-          >
-            {t}
-          </span>
-        ))}
+        <span className="border-b border-ink pb-1 text-xs uppercase tracking-widest text-ink">
+          posts
+        </span>
+        {/* Was a client-side tab, which gave the bio no URL and left it out of
+            the HTML until someone clicked. It is a page now. */}
+        <Link
+          href="/about"
+          className="pb-1 text-xs uppercase tracking-widest text-muted transition-colors hover:text-ink"
+        >
+          about
+        </Link>
         {preview && (
           <>
             <Link
@@ -87,19 +83,42 @@ export default function HomeContent({
         )}
       </nav>
 
-      {tab === "posts" && (
-        <>
-          {tags.length > 0 && (
-            <section className="px-6 pt-12 md:px-8 md:pt-20">
-              <div className="mx-auto max-w-2xl">
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  {tags.map(([tag]) => {
-                    const isSelected = selectedTags.has(tag);
-                    return (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`
+      {/* The site's one <h1>. It carries the subject, not just the name —
+              "Ryan York" alone told a search engine nothing about what any of
+              this is, and the page had no <h1> at all before. */}
+      <section className="px-6 pt-14 md:px-8 md:pt-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <h1
+            className="text-3xl font-bold tracking-tight text-ink md:text-4xl"
+            style={{
+              fontFamily: "var(--font-display)",
+              letterSpacing: "-0.03em",
+              lineHeight: 1.15,
+            }}
+          >
+            Essays on AI, education, product, and politics
+          </h1>
+          <p
+            className="mx-auto mt-4 max-w-xl text-base text-muted"
+            style={{ lineHeight: 1.7 }}
+          >
+            I&rsquo;m Ryan York. I write about how technology reshapes work and
+            learning &mdash; and who ends up sharing in what it creates.
+          </p>
+        </div>
+      </section>
+
+      {tags.length > 0 && (
+        <section className="px-6 pt-12 md:px-8 md:pt-16">
+          <div className="mx-auto max-w-2xl">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {tags.map(([tag]) => {
+                const isSelected = selectedTags.has(tag);
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => toggleTag(tag)}
+                    className={`
                           h-24 w-24 rounded-full border-2 flex items-center justify-center
                           text-xs font-medium transition-all duration-200
                           hover:scale-105 cursor-pointer text-center px-2
@@ -109,146 +128,100 @@ export default function HomeContent({
                               : "border-muted/30 bg-transparent text-muted hover:border-accent/50 hover:text-ink"
                           }
                         `}
-                        style={{ fontFamily: "var(--font-mono)" }}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          )}
-
-          <section className="px-6 py-12 md:px-8">
-            <div className="mx-auto max-w-2xl">
-              <h2
-                className="mb-8 text-xs uppercase tracking-widest text-muted"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
-                {hasFilter ? "Results" : "Recent"}
-              </h2>
-
-              {filteredPosts.length === 0 ? (
-                <p className="text-muted text-sm">
-                  No posts match those topics.
-                </p>
-              ) : (
-                <div className="space-y-6">
-                  {filteredPosts.map((post) => (
-                    <Link
-                      key={post.slug}
-                      href={`/posts/${post.slug}`}
-                      className="group flex overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
-                    >
-                      {post.frontmatter.ogImage && (
-                        <div className="relative w-40 shrink-0 overflow-hidden md:w-56">
-                          <img
-                            src={post.frontmatter.ogImage}
-                            alt={post.frontmatter.title}
-                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                          {post.slug === "progressive-agenda" && (
-                            <div
-                              className="pointer-events-none absolute inset-0"
-                              style={{ background: "rgba(30, 58, 95, 0.3)" }}
-                            />
-                          )}
-                        </div>
-                      )}
-                      <article className="flex flex-col justify-center p-5">
-                        <div
-                          className="mb-2 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
-                          style={{ fontFamily: "var(--font-mono)" }}
-                        >
-                          {post.status === "draft" && (
-                            <span className="rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-medium text-white">
-                              Draft
-                            </span>
-                          )}
-                          <time dateTime={post.frontmatter.date}>
-                            {new Date(
-                              post.frontmatter.date
-                            ).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              timeZone: "UTC",
-                            })}
-                          </time>
-                          <span className="text-paper-warm">/</span>
-                          <span>{post.readingTime}</span>
-                        </div>
-                        <h3
-                          className="mb-2 text-xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent md:text-2xl"
-                          style={{
-                            fontFamily: "var(--font-display)",
-                            letterSpacing: "-0.02em",
-                            lineHeight: 1.2,
-                          }}
-                        >
-                          {post.frontmatter.title}
-                        </h3>
-                        <p
-                          className="text-sm text-muted"
-                          style={{ lineHeight: 1.6 }}
-                        >
-                          {post.frontmatter.description}
-                        </p>
-                      </article>
-                    </Link>
-                  ))}
-                </div>
-              )}
+                    style={{ fontFamily: "var(--font-mono)" }}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
             </div>
-          </section>
-
-          <WorkingOn />
-        </>
-      )}
-
-      {tab === "about" && (
-        <section className="px-6 py-10 md:px-8 md:py-16">
-          <div
-            className="mx-auto max-w-3xl space-y-6 text-base text-ink/80"
-            style={{ lineHeight: 1.8 }}
-          >
-            <p>
-              My earliest memory is my mom throwing away the 6 VCRs I&rsquo;d
-              smuggled from friends&rsquo; houses and my own attic. I had fully
-              disassembled them and was trying to reconfigure the parts into a
-              game console. I was 5.
-            </p>
-            <p>
-              Same instinct, bigger VCRs. I built my first recording studio
-              at 15. I talked a bankrupt landlord into giving me a building and
-              turned it into a rock and roll camp for kids. I created math
-              software that put every teacher who used it into the top 5% of
-              their district. I built a CS curriculum that went from 400 to
-              50,000 students across 13 states in a year and a half. I
-              co-founded a charter school where kindergartners used real hammers
-              and saws&nbsp;&mdash; then walked away from it when the people in
-              charge stopped protecting kids.
-            </p>
-            <p>
-              Now I&rsquo;m CPTO of{" "}
-              <a href="https://willowed.org" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">Willow Education</a>
-              , and launching{" "}
-              <a href="https://clearwaterafrica.com" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">Clearwater</a>{" "}
-              in Accra, Ghana&nbsp;&mdash; where 3.6 million people don&rsquo;t
-              have reliable water. In the cracks between those stones lives
-              politics, gardening,{" "}
-              <a href="https://soundcloud.com/ryan_york" target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2 hover:text-accent">music</a>
-              , and fumbling my way through
-              parenthood.
-            </p>
-            <p>
-              This site is where I capture the ideas that won&rsquo;t leave me
-              alone.
-            </p>
           </div>
         </section>
       )}
+
+      <section className="px-6 py-12 md:px-8">
+        <div className="mx-auto max-w-2xl">
+          <h2
+            className="mb-8 text-xs uppercase tracking-widest text-muted"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            {hasFilter ? "Results" : "Recent"}
+          </h2>
+
+          {filteredPosts.length === 0 ? (
+            <p className="text-muted text-sm">No posts match those topics.</p>
+          ) : (
+            <div className="space-y-6">
+              {filteredPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/posts/${post.slug}`}
+                  className="group flex overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
+                >
+                  {post.frontmatter.ogImage && (
+                    <div className="relative w-40 shrink-0 overflow-hidden md:w-56">
+                      <img
+                        src={post.frontmatter.ogImage}
+                        alt={post.frontmatter.title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      {post.slug === "progressive-agenda" && (
+                        <div
+                          className="pointer-events-none absolute inset-0"
+                          style={{ background: "rgba(30, 58, 95, 0.3)" }}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <article className="flex flex-col justify-center p-5">
+                    <div
+                      className="mb-2 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
+                      style={{ fontFamily: "var(--font-mono)" }}
+                    >
+                      {post.status === "draft" && (
+                        <span className="rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-medium text-white">
+                          Draft
+                        </span>
+                      )}
+                      <time dateTime={post.frontmatter.date}>
+                        {new Date(post.frontmatter.date).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            timeZone: "UTC",
+                          },
+                        )}
+                      </time>
+                      <span className="text-paper-warm">/</span>
+                      <span>{post.readingTime}</span>
+                    </div>
+                    <h3
+                      className="mb-2 text-xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent md:text-2xl"
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        letterSpacing: "-0.02em",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {post.frontmatter.title}
+                    </h3>
+                    <p
+                      className="text-sm text-muted"
+                      style={{ lineHeight: 1.6 }}
+                    >
+                      {post.frontmatter.description}
+                    </p>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <WorkingOn />
     </div>
   );
 }

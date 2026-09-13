@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllTags, getPostsByTag } from "@/lib/posts";
 import { isPreviewEnabled } from "@/lib/preview";
+import { generateTagJsonLd, jsonLdScript } from "@/lib/seo";
+import { tagDescription, tagMetaDescription } from "@/lib/tags";
+import { tagUrl } from "@/lib/site";
 import type { Metadata } from "next";
 
 type Params = Promise<{ tag: string }>;
@@ -18,9 +21,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
+  const posts = getPostsByTag(decodedTag);
+  const description = tagMetaDescription(decodedTag, posts.length);
+
   return {
-    title: `Posts tagged "${decodedTag}" — Ryan York`,
-    description: `All posts about ${decodedTag}.`,
+    title: `${decodedTag}`,
+    description,
+    alternates: { canonical: tagUrl(decodedTag) },
+    openGraph: {
+      type: "website",
+      title: `${decodedTag} — Ryan York`,
+      description,
+      url: tagUrl(decodedTag),
+    },
   };
 }
 
@@ -32,8 +45,20 @@ export default async function TagPage({ params }: { params: Params }) {
 
   if (posts.length === 0) notFound();
 
+  const intro = tagDescription(decodedTag);
+
   return (
     <section className="px-6 py-16 md:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(
+          generateTagJsonLd(
+            decodedTag,
+            tagMetaDescription(decodedTag, posts.length),
+            posts
+          )
+        )}
+      />
       <div className="mx-auto max-w-3xl">
         <header className="animate-fade-up mb-12">
           <Link
@@ -55,6 +80,16 @@ export default async function TagPage({ params }: { params: Params }) {
           <p className="mt-2 text-sm text-muted" style={{ fontFamily: "var(--font-mono)" }}>
             {posts.length} {posts.length === 1 ? "post" : "posts"}
           </p>
+          {/* The tag page used to be a heading and a list — nothing a search
+              engine could rank or an assistant could quote. */}
+          {intro && (
+            <p
+              className="mt-6 text-base text-ink/80"
+              style={{ lineHeight: 1.8 }}
+            >
+              {intro}
+            </p>
+          )}
         </header>
 
         <div className="space-y-10">
