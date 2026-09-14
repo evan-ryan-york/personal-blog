@@ -9,8 +9,11 @@
  * which crawler asked.
  */
 
+// www, not the apex: ryanyork.io 307s to www.ryanyork.io, so pointing the
+// canonicals, feeds and JSON-LD ids at the apex sent every crawler through a
+// redirect to reach the page they were already being told was canonical.
 export const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ryanyork.io";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ryanyork.io";
 
 export const siteName = "Ryan York";
 
