@@ -70,7 +70,7 @@ export default function AboutBio({
         people in charge stopped protecting kids.
       </p>
       <p>
-        Now I&rsquo;m CPTO of{" "}
+        I&rsquo;m a co-founder of{" "}
         <a
           href="https://willowed.org"
           target="_blank"
@@ -79,7 +79,8 @@ export default function AboutBio({
         >
           Willow Education
         </a>
-        , and launching{" "}
+        , where I serve as Chief Product and Technology Officer. I&rsquo;m the
+        founder and CEO of{" "}
         <a
           href="https://clearwaterafrica.com"
           target="_blank"
@@ -89,7 +90,19 @@ export default function AboutBio({
           Clearwater
         </a>{" "}
         in Accra, Ghana&nbsp;&mdash; where 3.6 million people don&rsquo;t have
-        reliable water. In the cracks between those stones lives politics,
+        reliable water. Now I&rsquo;m launching{" "}
+        <a
+          href="https://workthatmatters.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={link}
+        >
+          Work That Matters
+        </a>{" "}
+        because I want AI to make work more fulfilling for the people doing it.
+        We help teams hand the repetitive parts of their jobs over to AI, then
+        give people the time and training to take on problems they care about
+        solving. In the cracks between those projects lives politics,
         gardening,{" "}
         <a
           href="https://soundcloud.com/ryan_york"

@@ -8,7 +8,7 @@ import { authorName, siteUrl } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Ryan York is a product and technology leader writing about AI, education, product, and politics. CPTO at Willow Education, and the founder of Clearwater in Accra, Ghana.",
+    "Ryan York is a product and technology leader writing about AI, education, product, and politics. Co-founder and CPTO of Willow Education, founder and CEO of Clearwater in Accra, Ghana, now launching Work That Matters.",
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: {
     type: "profile",
