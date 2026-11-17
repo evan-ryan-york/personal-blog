@@ -96,7 +96,6 @@ import SBWhyItMatters, {
   FullArgument as SBFullArgument,
 } from "../../../../content/posts/seven-bets/components/WhyItMatters";
 
-import CommentSection from "@/components/CommentSection";
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
 
@@ -241,9 +240,6 @@ export default async function PostPage({ params }: { params: Params }) {
           <CustomLayout post={post} related={related}>
             {content}
           </CustomLayout>
-          <div className="mx-auto max-w-3xl px-6 md:px-8">
-            <CommentSection slug={slug} />
-          </div>
         </>
       );
     }

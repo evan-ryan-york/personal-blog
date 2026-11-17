@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Post } from "@/lib/posts";
-import CommentSection from "@/components/CommentSection";
 import RelatedPosts from "@/components/RelatedPosts";
 
 export default function DefaultPostLayout({
@@ -77,8 +76,6 @@ export default function DefaultPostLayout({
             accent: "var(--color-accent, #c44d2b)",
           }}
         />
-
-        <CommentSection slug={post.slug} />
 
         <footer className="animate-fade-up delay-4 mt-16 border-t border-paper-warm pt-8">
           <Link
