@@ -1,7 +1,18 @@
-import { getAllPosts, getAllTags } from "@/lib/posts";
+import type { Metadata } from "next";
+import { getAllPosts, getAllTags, getMostRecentPost } from "@/lib/posts";
 import { isPreviewEnabled } from "@/lib/preview";
-import { generateBlogJsonLd, jsonLdScript } from "@/lib/seo";
+import {
+  generateBlogJsonLd,
+  generateHomeMetadata,
+  jsonLdScript,
+} from "@/lib/seo";
 import HomeContent from "@/components/HomeContent";
+
+// Published posts only: a preview cookie must never put a draft's card on the
+// link everyone shares.
+export function generateMetadata(): Metadata {
+  return generateHomeMetadata(getMostRecentPost());
+}
 
 export default async function HomePage() {
   const includeDrafts = await isPreviewEnabled();

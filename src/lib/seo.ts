@@ -115,6 +115,20 @@ export function generateSiteMetadata(): Metadata {
         "max-video-preview": -1,
       },
     },
+    ...siteSocialCard(siteOgImage, siteName),
+  };
+}
+
+/**
+ * The site's Open Graph and Twitter blocks around a given image. Next merges
+ * metadata shallowly, so a page that only wants a different image still has to
+ * restate both blocks whole — this keeps that to one copy.
+ */
+function siteSocialCard(
+  image: string,
+  alt: string
+): Pick<Metadata, "openGraph" | "twitter"> {
+  return {
     openGraph: {
       type: "website",
       title: `${siteName} — essays on AI, education, product, and politics`,
@@ -122,16 +136,25 @@ export function generateSiteMetadata(): Metadata {
       url: siteUrl,
       siteName,
       locale: "en_US",
-      images: [{ url: siteOgImage, width: 1200, height: 630, alt: siteName }],
+      images: [{ url: image, width: 1200, height: 630, alt }],
     },
     twitter: {
       card: "summary_large_image",
       title: siteName,
       description: siteDescription,
       creator: "@evan_ryan_york",
-      images: [siteOgImage],
+      images: [image],
     },
   };
+}
+
+/**
+ * The homepage shares as the site, but wearing the newest post's card, so a
+ * link to ryanyork.io previews whatever was published last.
+ */
+export function generateHomeMetadata(latest: Post | null): Metadata {
+  if (!latest) return {};
+  return siteSocialCard(ogImageFor(latest), latest.frontmatter.title);
 }
 
 /* ---------------------------------------------------------------------------
