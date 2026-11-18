@@ -29,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: siteUrl, lastModified: newest, priority: 1 },
     { url: `${siteUrl}/about`, lastModified: newest, priority: 0.7 },
+    { url: `${siteUrl}/music`, lastModified: newest, priority: 0.5 },
     ...postUrls,
     ...tagUrls,
   ];

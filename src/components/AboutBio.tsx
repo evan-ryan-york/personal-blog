@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { authorProfiles } from "@/lib/site";
 
 /**
@@ -104,14 +105,9 @@ export default function AboutBio({
         give people the time and training to take on problems they care about
         solving. In the cracks between those projects lives politics,
         gardening,{" "}
-        <a
-          href="https://soundcloud.com/ryan_york"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={link}
-        >
+        <Link href="/music" className={link}>
           music
-        </a>
+        </Link>
         , and fumbling my way through parenthood.
       </p>
       <p>
