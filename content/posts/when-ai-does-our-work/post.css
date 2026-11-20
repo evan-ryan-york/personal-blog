@@ -1,0 +1,710 @@
+/* ---------------------------------------------------------------------------
+   What Happens to Us When AI Does Our Work? — a Seven Bets companion, set
+   as a night at the theater: a dark house, candle-amber accents, slate
+   blue from the stage curtains, Crimson Pro throughout and Space Grotesk
+   for labels.
+
+   Builds on the shared `sb-` rules in src/app/globals.css (which read the
+   tokens set in this post's layout); these are the pieces only this essay
+   needs. Imported by the post's layout so the styles live with the post.
+   --------------------------------------------------------------------------- */
+
+/* --- Hero: full screen, like every other post --- */
+
+.wa-hero {
+  --hero-ink: var(--wa-hero-ink, #f4f1ea);
+  --hero-muted: var(--wa-hero-muted, #d9d4ca);
+  --hero-soft: var(--wa-hero-soft, #c9c3b8);
+  --hero-accent: var(--wa-hero-accent, var(--hero-ink));
+
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  background: rgb(var(--wa-scrim, 14, 13, 11));
+  color: var(--hero-ink);
+  padding: 7rem 1.75rem 7.5rem;
+}
+
+/* Phones crop the wide painting to a column; keep the wave and the
+   stagehand at its crank in frame. */
+.wa-hero-img {
+  object-fit: cover;
+  object-position: 64% center;
+}
+
+/* Phones: varnish from the top, where the headline sits */
+.wa-hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--wa-scrim, 14, 13, 11), 0.95) 0%,
+    rgba(var(--wa-scrim, 14, 13, 11), 0.88) 40%,
+    rgba(var(--wa-scrim, 14, 13, 11), 0.35) 64%,
+    rgba(var(--wa-scrim, 14, 13, 11), 0.2) 100%
+  );
+}
+
+/* The memo's header line: author left, file number right, a hairline under */
+.wa-hero-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem 1.75rem 0;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid rgba(243, 234, 216, 0.22);
+  font-family: var(--sb-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.wa-hero-name {
+  color: var(--hero-ink);
+  transition: color 0.2s;
+}
+
+.wa-hero-file {
+  color: var(--hero-muted);
+}
+
+.wa-hero-text {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* The series line, with a ruler before it */
+.wa-hero-series {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-family: var(--sb-font-mono);
+  font-size: clamp(0.69rem, 1vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hero-soft);
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+}
+
+.wa-hero-series {
+  color: var(--wa-hero-label, var(--hero-soft));
+}
+
+.wa-hero-series::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.wa-hero-name:hover,
+.wa-hero-series:hover {
+  color: var(--hero-ink);
+}
+
+.wa-hero-title {
+  font-family: var(--sb-font-display);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  /* Capped by height too, so a short laptop screen keeps the hero to one view */
+  font-size: clamp(2.75rem, min(6vw, 8.6vh), 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  color: var(--hero-ink);
+  margin: 0 0 1.5rem;
+  max-width: 15ch;
+  text-wrap: balance;
+  text-shadow: 0 2px 40px rgba(var(--wa-scrim, 14, 13, 11), 0.6);
+}
+
+.wa-hero-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--hero-accent);
+}
+
+.wa-hero-dek {
+  font-family: var(--sb-font-body);
+  font-size: clamp(1.0625rem, min(1.45vw, 2.6vh), 1.3125rem);
+  line-height: 1.45;
+  color: var(--hero-muted);
+  max-width: 44ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* Memo fields: label over value, in two columns */
+.wa-hero-meta {
+  display: flex;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: clamp(1.25rem, 3.2vh, 2rem) 0 0;
+  padding-top: 0.875rem;
+  border-top: 1px solid rgba(243, 234, 216, 0.22);
+  font-family: var(--sb-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wa-hero-meta dt {
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--hero-soft);
+  margin-bottom: 0.3rem;
+}
+
+.wa-hero-meta dd {
+  margin: 0;
+  color: var(--hero-ink);
+}
+
+/* The plate label, set like a figure number in the corner of the painting */
+.wa-hero-plate {
+  display: none;
+  position: absolute;
+  right: 2.5rem;
+  bottom: 2.25rem;
+  z-index: 10;
+  font-family: var(--sb-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hero-ink);
+  text-shadow: 0 1px 10px rgba(var(--wa-scrim, 14, 13, 11), 0.9);
+}
+
+.wa-hero-cue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--sb-font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hero-ink);
+  text-shadow: 0 1px 12px rgba(var(--wa-scrim, 14, 13, 11), 0.8);
+}
+
+.wa-hero-cue-line {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(to bottom, var(--hero-ink), transparent);
+}
+
+/* Wide: the whole painting shows; varnish weighted to the left, headline
+   vertically centered over the architecture */
+@media (min-width: 768px) {
+  .wa-hero {
+    justify-content: center;
+    padding: max(6.5rem, 12vh) 6vw max(4.5rem, 9vh);
+  }
+
+  .wa-hero-title,
+  .wa-hero-series {
+    margin-bottom: clamp(1rem, 2.6vh, 1.5rem);
+  }
+
+  .wa-hero-img {
+    object-position: center;
+  }
+
+  .wa-hero-scrim {
+    background:
+      linear-gradient(
+        96deg,
+        rgba(var(--wa-scrim, 14, 13, 11), 0.93) 0%,
+        rgba(var(--wa-scrim, 14, 13, 11), 0.78) 32%,
+        rgba(var(--wa-scrim, 14, 13, 11), 0.22) 56%,
+        rgba(var(--wa-scrim, 14, 13, 11), 0) 100%
+      ),
+      linear-gradient(0deg, rgba(var(--wa-scrim, 14, 13, 11), 0.6) 0%, rgba(var(--wa-scrim, 14, 13, 11), 0) 24%),
+      linear-gradient(180deg, rgba(var(--wa-scrim, 14, 13, 11), 0.55) 0%, rgba(var(--wa-scrim, 14, 13, 11), 0) 18%);
+  }
+
+  .wa-hero-bar {
+    margin: 2rem 2.5rem 0;
+  }
+
+  .wa-hero-plate {
+    display: block;
+  }
+}
+
+/* --- Body --- */
+
+/* Background: dust in the beam. A cone of stage light falls from the top of
+   the screen, with dust motes floating in it at three depths. The nearer the
+   layer, the faster it scrolls and drifts upward, so the background has
+   depth. Over everything, a pixel-fine monochrome grain, like film.
+
+   The light and dust are the `.wa-bg` div from BackgroundMotion, which writes
+   the scroll position into `--wa-sy`. It and the grain (`::after`) are fixed
+   to the screen, with the essay scrolling over them. The hero covers them at
+   the top. Fixed elements, not `background-attachment: fixed`, which stutters
+   on iOS. The body wrap and footer drop their flat fill so it shows through. */
+.sb-post.wa-post {
+  background-color: var(--sb-bg);
+  isolation: isolate;
+}
+
+.wa-post .wa-bg,
+.sb-post.wa-post::after {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wa-post .wa-bg {
+  z-index: -1;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cg fill='rgb%28242,214,170%29'%3E%3Ccircle cx='214.2' cy='489.8' r='1.97' fill-opacity='0.34'/%3E%3Ccircle cx='563.1' cy='59.0' r='1.61' fill-opacity='0.41'/%3E%3Ccircle cx='233.4' cy='210.9' r='2.60' fill-opacity='0.31'/%3E%3Ccircle cx='752.8' cy='428.7' r='2.24' fill-opacity='0.22'/%3E%3Ccircle cx='571.4' cy='781.2' r='2.12' fill-opacity='0.38'/%3E%3Ccircle cx='604.3' cy='57.6' r='2.36' fill-opacity='0.34'/%3E%3Ccircle cx='271.1' cy='27.9' r='2.47' fill-opacity='0.31'/%3E%3Ccircle cx='646.9' cy='790.9' r='2.31' fill-opacity='0.43'/%3E%3Ccircle cx='355.5' cy='720.8' r='2.04' fill-opacity='0.43'/%3E%3Ccircle cx='791.0' cy='87.7' r='1.74' fill-opacity='0.24'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='620' height='620'%3E%3Cg fill='rgb%28242,214,170%29'%3E%3Ccircle cx='592.7' cy='587.7' r='0.94' fill-opacity='0.27'/%3E%3Ccircle cx='518.0' cy='456.3' r='1.37' fill-opacity='0.35'/%3E%3Ccircle cx='375.7' cy='376.2' r='1.31' fill-opacity='0.30'/%3E%3Ccircle cx='267.0' cy='244.0' r='1.41' fill-opacity='0.60'/%3E%3Ccircle cx='588.6' cy='337.4' r='1.21' fill-opacity='0.34'/%3E%3Ccircle cx='22.3' cy='17.0' r='1.23' fill-opacity='0.35'/%3E%3Ccircle cx='235.6' cy='552.9' r='1.27' fill-opacity='0.44'/%3E%3Ccircle cx='146.4' cy='14.8' r='1.13' fill-opacity='0.29'/%3E%3Ccircle cx='316.3' cy='619.2' r='1.37' fill-opacity='0.31'/%3E%3Ccircle cx='554.0' cy='494.0' r='1.41' fill-opacity='0.57'/%3E%3Ccircle cx='473.0' cy='489.6' r='1.15' fill-opacity='0.59'/%3E%3Ccircle cx='596.4' cy='99.9' r='1.43' fill-opacity='0.50'/%3E%3Ccircle cx='286.1' cy='328.8' r='1.24' fill-opacity='0.57'/%3E%3Ccircle cx='310.5' cy='515.5' r='1.15' fill-opacity='0.56'/%3E%3Ccircle cx='557.8' cy='285.8' r='1.30' fill-opacity='0.57'/%3E%3Ccircle cx='448.7' cy='301.7' r='1.06' fill-opacity='0.36'/%3E%3Ccircle cx='433.7' cy='103.0' r='1.54' fill-opacity='0.34'/%3E%3Ccircle cx='565.1' cy='191.9' r='1.57' fill-opacity='0.49'/%3E%3Ccircle cx='312.6' cy='321.0' r='1.36' fill-opacity='0.45'/%3E%3Ccircle cx='193.3' cy='128.8' r='1.26' fill-opacity='0.58'/%3E%3Ccircle cx='386.4' cy='46.7' r='1.47' fill-opacity='0.50'/%3E%3Ccircle cx='562.7' cy='118.7' r='1.42' fill-opacity='0.26'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cg fill='rgb%28242,214,170%29'%3E%3Ccircle cx='56.4' cy='355.9' r='0.88' fill-opacity='0.28'/%3E%3Ccircle cx='208.1' cy='188.8' r='0.83' fill-opacity='0.44'/%3E%3Ccircle cx='39.4' cy='11.9' r='0.92' fill-opacity='0.33'/%3E%3Ccircle cx='320.2' cy='0.9' r='0.72' fill-opacity='0.42'/%3E%3Ccircle cx='96.1' cy='397.0' r='0.95' fill-opacity='0.21'/%3E%3Ccircle cx='10.7' cy='227.4' r='0.97' fill-opacity='0.31'/%3E%3Ccircle cx='91.0' cy='177.3' r='0.51' fill-opacity='0.27'/%3E%3Ccircle cx='183.9' cy='208.2' r='0.62' fill-opacity='0.27'/%3E%3Ccircle cx='91.9' cy='193.0' r='0.64' fill-opacity='0.21'/%3E%3Ccircle cx='351.8' cy='233.7' r='0.82' fill-opacity='0.26'/%3E%3Ccircle cx='416.9' cy='361.2' r='0.56' fill-opacity='0.30'/%3E%3Ccircle cx='303.0' cy='298.7' r='0.97' fill-opacity='0.33'/%3E%3Ccircle cx='348.6' cy='281.5' r='0.65' fill-opacity='0.38'/%3E%3Ccircle cx='370.6' cy='355.4' r='0.75' fill-opacity='0.38'/%3E%3Ccircle cx='14.5' cy='102.0' r='0.90' fill-opacity='0.32'/%3E%3Ccircle cx='72.7' cy='230.5' r='0.85' fill-opacity='0.40'/%3E%3Ccircle cx='157.4' cy='184.4' r='0.75' fill-opacity='0.43'/%3E%3Ccircle cx='218.8' cy='165.2' r='0.74' fill-opacity='0.21'/%3E%3Ccircle cx='18.3' cy='295.4' r='0.99' fill-opacity='0.38'/%3E%3Ccircle cx='165.3' cy='71.5' r='0.75' fill-opacity='0.49'/%3E%3Ccircle cx='323.6' cy='226.6' r='0.93' fill-opacity='0.27'/%3E%3Ccircle cx='215.8' cy='400.0' r='0.79' fill-opacity='0.34'/%3E%3Ccircle cx='113.1' cy='230.2' r='0.98' fill-opacity='0.20'/%3E%3Ccircle cx='329.1' cy='344.6' r='0.94' fill-opacity='0.42'/%3E%3Ccircle cx='339.8' cy='217.8' r='0.78' fill-opacity='0.33'/%3E%3Ccircle cx='23.6' cy='365.4' r='0.78' fill-opacity='0.26'/%3E%3Ccircle cx='212.0' cy='203.7' r='0.68' fill-opacity='0.30'/%3E%3Ccircle cx='226.2' cy='261.9' r='0.81' fill-opacity='0.34'/%3E%3Ccircle cx='11.7' cy='96.4' r='0.59' fill-opacity='0.38'/%3E%3Ccircle cx='361.6' cy='335.3' r='0.90' fill-opacity='0.44'/%3E%3Ccircle cx='107.2' cy='353.5' r='0.84' fill-opacity='0.22'/%3E%3Ccircle cx='7.0' cy='6.1' r='0.88' fill-opacity='0.27'/%3E%3Ccircle cx='46.0' cy='262.4' r='0.67' fill-opacity='0.22'/%3E%3Ccircle cx='67.0' cy='221.5' r='0.58' fill-opacity='0.28'/%3E%3Ccircle cx='298.9' cy='191.0' r='0.66' fill-opacity='0.34'/%3E%3Ccircle cx='9.9' cy='162.4' r='0.71' fill-opacity='0.26'/%3E%3Ccircle cx='45.7' cy='377.9' r='0.76' fill-opacity='0.26'/%3E%3Ccircle cx='254.4' cy='343.2' r='0.51' fill-opacity='0.21'/%3E%3Ccircle cx='61.5' cy='301.9' r='0.58' fill-opacity='0.41'/%3E%3Ccircle cx='284.8' cy='228.8' r='0.61' fill-opacity='0.49'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(40% 95% at 50% -15%, rgba(235, 178, 115, 0.11), transparent 75%);
+  background-size: 900px 900px, 620px 620px, 420px 420px, 100% 100%;
+  /* Each layer rises one whole tile per cycle of --wa-t, so the loop is
+     seamless; bigger (nearer) tiles therefore move faster. */
+  background-position:
+    0 calc(var(--wa-sy, 0) * -0.45px - var(--wa-t) * 900px),
+    0 calc(var(--wa-sy, 0) * -0.25px - var(--wa-t) * 620px),
+    0 calc(var(--wa-sy, 0) * -0.1px - var(--wa-t) * 420px),
+    0 0;
+  -webkit-mask-image: radial-gradient(70% 110% at 50% -10%, #000 30%, transparent 85%);
+  mask-image: radial-gradient(70% 110% at 50% -10%, #000 30%, transparent 85%);
+  animation: wa-t 180s linear infinite;
+}
+
+.sb-post.wa-post::after {
+  content: "";
+  z-index: 50;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  opacity: 0.045;
+}
+
+/* Drift clock for the dust: 0 to 1, forever. Registered so it can animate. */
+@property --wa-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes wa-t {
+  to {
+    --wa-t: 1;
+  }
+}
+
+/* Reduced motion: no drift and no parallax; the light, dust and grain stay
+   put. !important beats the scroll value BackgroundMotion writes inline. */
+@media (prefers-reduced-motion: reduce) {
+  .wa-post .wa-bg {
+    animation: none;
+    --wa-sy: 0 !important;
+  }
+}
+
+.wa-post .sb-body-wrap,
+.wa-post .sb-footer {
+  background: transparent;
+}
+
+.wa-post .sb-prose {
+  padding-top: clamp(3rem, 7vw, 5rem);
+  /* Crimson Pro sets small: 2px up on the shared scale */
+  font-size: clamp(calc(1.125rem + 2px), calc(1.9vw + 2px), calc(1.375rem + 2px));
+}
+
+.wa-post .sb-prose h2,
+.wa-post .sb-chapter-title {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.wa-post .sb-turn-line {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--sb-gold);
+}
+
+/* Labels in the sans, tracked less than a mono needs */
+.wa-post .sb-eyebrow,
+.wa-post .sb-figure-caption {
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--sb-dim);
+}
+
+/* Plain hairline rules */
+.wa-post .sb-turn-rule,
+.wa-post .sb-chapter-rule {
+  height: 1px;
+  background: var(--sb-rule);
+}
+
+.wa-post .sb-turn-rule {
+  width: 3rem;
+}
+
+/* --- Chapter heads: "01 · The work AI takes on first" --- */
+
+.sb-prose .sb-chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  margin: clamp(4.5rem, 11vw, 7rem) 0 clamp(1.75rem, 4vw, 2.25rem);
+  scroll-margin-top: 2rem;
+}
+
+.sb-chapter-num {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--sb-font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--sb-gold);
+  font-weight: 500;
+}
+
+
+.sb-chapter-rule {
+  width: 2.25rem;
+  height: 1px;
+  background: var(--sb-gold);
+}
+
+.sb-chapter-title {
+  text-wrap: balance;
+}
+
+/* Sub-sections inside a chapter */
+.sb-prose h3 {
+  font-family: var(--sb-font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(1.5rem, 3.2vw, 1.875rem);
+  line-height: 1.25;
+  color: var(--sb-heading);
+  margin: clamp(2.75rem, 6vw, 3.75rem) 0 1.25rem;
+}
+
+.sb-prose h3 a,
+.sb-prose h3 a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --- Two futures: three bars of the world's valuable work ---
+   Narrow: each row's title stacks over its bar. From 720px: titles in a left
+   column. From 1100px: the figure breaks out of the column, with a bracket
+   over the bars and a name over every segment. Below that the legend
+   carries the colors. */
+
+.wa-futures {
+  --seg-workers: var(--wa-seg-workers, #d9bb8c);
+  --seg-ai: var(--wa-ink);
+  --seg-innovators: var(--sb-gold);
+  --seg-unsolved: var(--wa-seg-unsolved, #e3ddd0);
+  --label-col: 0px;
+
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 3.5vw, 2.25rem);
+  background: var(--wa-card, #f9f7f2);
+  border: 1px solid var(--sb-rule);
+  font-family: var(--sb-font-mono);
+}
+
+.wa-futures-title {
+  font-family: var(--sb-font-display);
+  font-size: clamp(1.625rem, 3.6vw, 2.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--sb-heading);
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+  text-wrap: balance;
+}
+
+/* The bracket: only meaningful beside the names, so wide screens only */
+.wa-futures-scale {
+  display: none;
+}
+
+.wa-futures-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 1.25rem 0;
+}
+
+.wa-futures-row-now {
+  padding-top: 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--sb-rule);
+  margin-bottom: 0.5rem;
+}
+
+.wa-futures-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sb-dim);
+  margin-bottom: 0.375rem;
+}
+
+.wa-futures-row:nth-of-type(3) .wa-futures-eyebrow {
+  color: var(--sb-dim);
+}
+
+.wa-futures-row:last-of-type .wa-futures-eyebrow {
+  color: var(--sb-gold);
+}
+
+.sb-prose .wa-futures-row-title {
+  font-family: var(--sb-font-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  line-height: 1.2;
+  color: var(--sb-heading);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.sb-prose .wa-futures-note {
+  font-family: var(--sb-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--sb-dim);
+  margin: 0.375rem 0 0;
+  text-wrap: pretty;
+}
+
+.wa-futures-names {
+  display: none;
+}
+
+.wa-futures-bar {
+  display: flex;
+  gap: 3px;
+  height: clamp(2.75rem, 6vw, 3.5rem);
+}
+
+.wa-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  font-size: clamp(0.6875rem, 1.6vw, 1rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.wa-futures-bar .wa-seg:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+.wa-futures-bar .wa-seg:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.wa-seg-workers,
+.wa-seg-newInnovators {
+  background: var(--seg-workers);
+  color: var(--wa-ink);
+}
+
+.wa-seg-ai {
+  background: var(--seg-ai);
+  color: var(--wa-paper);
+}
+
+.wa-seg-innovators {
+  background: var(--seg-innovators);
+  color: var(--wa-paper);
+}
+
+.wa-seg-unsolved {
+  background: var(--seg-unsolved);
+  color: var(--sb-muted);
+}
+
+/* New innovators: the same color as the workers they were, marked as moved */
+.wa-futures-bar .wa-seg-newInnovators,
+.wa-swatch.wa-seg-newInnovators {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(20, 19, 15, 0.09) 0 2px,
+      transparent 2px 7px
+    ),
+    var(--seg-workers);
+}
+
+/* Too thin on a phone to hold "5%"; the legend names it */
+@media (max-width: 719px) {
+  .wa-futures-bar .wa-seg-innovators {
+    font-size: 0;
+  }
+
+  .wa-futures {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.wa-futures-legend {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid var(--sb-rule);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  font-family: var(--sb-font-body);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--sb-muted);
+}
+
+.wa-futures-legend li {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+
+.wa-futures-legend strong {
+  font-weight: 600;
+  color: var(--sb-heading);
+}
+
+.wa-swatch {
+  flex: none;
+  width: 0.8125rem;
+  height: 0.8125rem;
+  border-radius: 2px;
+  margin-top: 0.2rem;
+}
+
+.sb-prose .wa-futures-footnote {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--sb-dim);
+  margin: 1.25rem 0 0;
+}
+
+@media (min-width: 720px) {
+  .wa-futures {
+    --label-col: 30%;
+  }
+
+  .wa-futures-row {
+    grid-template-columns: var(--label-col) 1fr;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    align-items: end;
+  }
+
+  .wa-futures-legend {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+  }
+}
+
+/* Wide enough to break out of the column: the figure widens, and there is
+   room for the bracket and a name over every segment. */
+@media (min-width: 1100px) {
+  .sb-prose .wa-futures {
+    width: min(1040px, calc(100vw - 6rem));
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .wa-futures {
+    --label-col: 28%;
+  }
+
+  .wa-futures-scale {
+    display: flex;
+    gap: 3px;
+    margin-left: calc(var(--label-col) + clamp(1.25rem, 3vw, 2rem));
+    margin-bottom: 1rem;
+  }
+
+  .wa-futures-bracket {
+    min-width: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--sb-fainter);
+    position: relative;
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sb-dim);
+    white-space: nowrap;
+  }
+
+  .wa-futures-bracket::before,
+  .wa-futures-bracket::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    width: 1px;
+    height: 6px;
+    background: var(--sb-fainter);
+  }
+
+  .wa-futures-bracket::before {
+    left: 0;
+  }
+
+  .wa-futures-bracket::after {
+    right: 0;
+  }
+
+  .wa-futures-names {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 0.5rem;
+  }
+
+  .wa-futures-names span {
+    min-width: 0;
+    text-align: center;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--sb-muted);
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .wa-futures-legend {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}

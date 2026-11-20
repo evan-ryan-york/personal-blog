@@ -46,18 +46,59 @@ const QUADRANTS: Quadrant[] = [
   },
 ];
 
-// Mirrors the post's tokens. Canvas can't read CSS variables, so the palette is
-// repeated here; keep it in step with SB_TOKENS in the post layout.
-const GROUND = "#080A0E";
-const BORDER = "#262C38";
-const GOLD = "#C9A45C";
-const GOLD_BRIGHT = "#E3C382";
-const HEADING = "#F2ECE0";
-const BODY = "#D6D0C4";
+// Canvas can't use CSS variables directly, so the palette is read off the
+// post's tokens at paint time. That lets a companion post with its own tokens
+// (When AI Does Our Work, in pastels) reuse the plate. The defaults mirror
+// SB_TOKENS in the Seven Bets layout and apply if a token is missing.
+type Palette = {
+  ground: string;
+  border: string;
+  gold: string;
+  goldBright: string;
+  heading: string;
+  body: string;
+  divider: string;
+};
 
-const FONT_DISPLAY = "'Cormorant Garamond', Georgia, serif";
-const FONT_BODY = "'EB Garamond', Georgia, serif";
-const FONT_MONO = "'Space Mono', ui-monospace, monospace";
+const DEFAULT_PALETTE: Palette = {
+  ground: "#080A0E",
+  border: "#262C38",
+  gold: "#C9A45C",
+  goldBright: "#E3C382",
+  heading: "#F2ECE0",
+  body: "#D6D0C4",
+  divider: "rgba(201,164,92,.3)",
+};
+
+const C: Palette = { ...DEFAULT_PALETTE };
+
+function readPalette(el: Element) {
+  const style = getComputedStyle(el);
+  const token = (name: string, fallback: string) =>
+    style.getPropertyValue(name).trim() || fallback;
+  C.ground = token("--sb-bg-deep", DEFAULT_PALETTE.ground);
+  C.border = token("--sb-rule", DEFAULT_PALETTE.border);
+  C.gold = token("--sb-gold", DEFAULT_PALETTE.gold);
+  C.goldBright = token("--sb-gold-bright", DEFAULT_PALETTE.goldBright);
+  C.heading = token("--sb-heading", DEFAULT_PALETTE.heading);
+  C.body = token("--sb-body", DEFAULT_PALETTE.body);
+  C.divider = token("--sb-plate-divider", DEFAULT_PALETTE.divider);
+}
+
+// Typefaces come from the post's tokens too, defaulting to Seven Bets'.
+const F = {
+  display: "'Cormorant Garamond', Georgia, serif",
+  body: "'EB Garamond', Georgia, serif",
+  mono: "'Space Mono', ui-monospace, monospace",
+};
+
+function readFonts(el: Element) {
+  const style = getComputedStyle(el);
+  const token = (name: string) => style.getPropertyValue(name).trim();
+  F.display = token("--sb-font-display") || F.display;
+  F.body = token("--sb-font-body") || F.body;
+  F.mono = token("--sb-font-mono") || F.mono;
+}
 
 // Below this the two columns would be too narrow to hold a line of body copy,
 // so the grid stacks into one column.
@@ -146,8 +187,8 @@ function layout(
   let y = pad + titleSize * 0.9;
 
   if (paint) {
-    ctx.fillStyle = HEADING;
-    ctx.font = `400 ${titleSize}px ${FONT_DISPLAY}`;
+    ctx.fillStyle = C.heading;
+    ctx.font = `400 ${titleSize}px ${F.display}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillText("Cynefin Framework", width / 2, y);
@@ -166,7 +207,7 @@ function layout(
       y,
       width / 2 + 30 * s,
       y,
-      GOLD_BRIGHT
+      C.goldBright
     );
   }
 
@@ -175,7 +216,7 @@ function layout(
 
   // --- Quadrants -----------------------------------------------------------
   const quadrantHeight = (quad: Quadrant): number => {
-    ctx.font = `400 ${bodySize}px ${FONT_BODY}`;
+    ctx.font = `400 ${bodySize}px ${F.body}`;
     const bodyLines = wrap(ctx, quad.body, colW).length;
     const exampleLines = wrap(ctx, quad.example, colW).length;
     const impLines = wrap(ctx, quad.implication, colW).length;
@@ -198,39 +239,39 @@ function layout(
   const drawQuadrant = (quad: Quadrant, x: number, top: number) => {
     let cursor = top;
 
-    ctx.fillStyle = HEADING;
-    ctx.font = `300 ${quadSize}px ${FONT_DISPLAY}`;
+    ctx.fillStyle = C.heading;
+    ctx.font = `300 ${quadSize}px ${F.display}`;
     ctx.fillText(quad.title, x, cursor + quadSize * 0.78);
     cursor += quadSize * 1.0 + 18 * s;
 
-    ctx.fillStyle = BODY;
-    ctx.font = `400 ${bodySize}px ${FONT_BODY}`;
+    ctx.fillStyle = C.body;
+    ctx.font = `400 ${bodySize}px ${F.body}`;
     for (const line of wrap(ctx, quad.body, colW)) {
       ctx.fillText(line, x, cursor + bodySize);
       cursor += bodyLead;
     }
 
     cursor += 26 * s;
-    ctx.fillStyle = GOLD;
-    ctx.font = `400 ${labelSize}px ${FONT_MONO}`;
+    ctx.fillStyle = C.gold;
+    ctx.font = `400 ${labelSize}px ${F.mono}`;
     trackedText(ctx, "EXAMPLE", x, cursor + labelSize, labelSize * 0.16);
     cursor += labelSize + 16 * s;
 
-    ctx.fillStyle = BODY;
-    ctx.font = `400 ${bodySize}px ${FONT_BODY}`;
+    ctx.fillStyle = C.body;
+    ctx.font = `400 ${bodySize}px ${F.body}`;
     for (const line of wrap(ctx, quad.example, colW)) {
       ctx.fillText(line, x, cursor + bodySize);
       cursor += bodyLead;
     }
 
     cursor += 26 * s;
-    ctx.fillStyle = GOLD;
-    ctx.font = `400 ${labelSize}px ${FONT_MONO}`;
+    ctx.fillStyle = C.gold;
+    ctx.font = `400 ${labelSize}px ${F.mono}`;
     trackedText(ctx, "AI IMPLICATION", x, cursor + labelSize, labelSize * 0.16);
     cursor += labelSize + 16 * s;
 
-    ctx.fillStyle = BODY;
-    ctx.font = `400 ${bodySize}px ${FONT_BODY}`;
+    ctx.fillStyle = C.body;
+    ctx.font = `400 ${bodySize}px ${F.body}`;
     for (const line of wrap(ctx, quad.implication, colW)) {
       ctx.fillText(line, x, cursor + bodySize);
       cursor += bodyLead;
@@ -251,7 +292,7 @@ function layout(
             y - rowGap / 2,
             contentX + contentW,
             y - rowGap / 2,
-            "rgba(201,164,92,.3)"
+            C.divider
           );
         }
       }
@@ -275,7 +316,7 @@ function layout(
             y - rowGap,
             contentX + contentW,
             y - rowGap,
-            "rgba(201,164,92,.3)"
+            C.divider
           );
         }
       }
@@ -290,7 +331,7 @@ function layout(
     // Vertical rule spanning both rows, drawn last so it reads as one stroke.
     if (paint) {
       const midX = contentX + colW + gutter;
-      hairline(ctx, midX, gridTop, midX, y, "rgba(201,164,92,.3)");
+      hairline(ctx, midX, gridTop, midX, y, C.divider);
     }
   }
 
@@ -298,6 +339,8 @@ function layout(
 }
 
 function render(canvas: HTMLCanvasElement, width: number) {
+  readPalette(canvas);
+  readFonts(canvas);
   const measure = document.createElement("canvas").getContext("2d");
   const ctx = canvas.getContext("2d");
   if (!measure || !ctx) return;
@@ -312,11 +355,11 @@ function render(canvas: HTMLCanvasElement, width: number) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   // Plate ground and frame.
-  ctx.fillStyle = GROUND;
+  ctx.fillStyle = C.ground;
   ctx.beginPath();
   ctx.roundRect(0.5, 0.5, width - 1, height - 1, 4);
   ctx.fill();
-  ctx.strokeStyle = BORDER;
+  ctx.strokeStyle = C.border;
   ctx.lineWidth = 1;
   ctx.stroke();
 
@@ -336,6 +379,7 @@ export default function CynefinPlate({ caption }: { caption?: string }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    readFonts(canvas);
 
     const observer = new ResizeObserver(([entry]) => {
       const width = Math.round(entry.contentRect.width);
@@ -350,10 +394,10 @@ export default function CynefinPlate({ caption }: { caption?: string }) {
     // webfonts land — otherwise the plate is measured in Georgia and keeps
     // those line breaks after Cormorant arrives.
     Promise.all([
-      document.fonts.load(`400 52px ${FONT_DISPLAY}`),
-      document.fonts.load(`300 38px ${FONT_DISPLAY}`),
-      document.fonts.load(`400 19px ${FONT_BODY}`),
-      document.fonts.load(`400 11px ${FONT_MONO}`),
+      document.fonts.load(`400 52px ${F.display}`),
+      document.fonts.load(`300 38px ${F.display}`),
+      document.fonts.load(`400 19px ${F.body}`),
+      document.fonts.load(`400 11px ${F.mono}`),
     ])
       .then(paint)
       .catch(() => {});

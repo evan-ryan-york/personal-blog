@@ -96,6 +96,12 @@ import SBWhyItMatters, {
   FullArgument as SBFullArgument,
 } from "../../../../content/posts/seven-bets/components/WhyItMatters";
 
+// What Happens to Us When AI Does Our Work? — a Seven Bets companion, so it
+// borrows that post's components and adds two of its own.
+import WhenAiDoesOurWorkLayout from "../../../../content/posts/when-ai-does-our-work/layout";
+import WAChapter from "../../../../content/posts/when-ai-does-our-work/components/Chapter";
+import WATwoFutures from "../../../../content/posts/when-ai-does-our-work/components/TwoFutures";
+
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
 
@@ -166,6 +172,15 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     FullArgument: SBFullArgument,
     Closing: SBClosing,
   },
+  "when-ai-does-our-work": {
+    Lead: SBLead,
+    Turn: SBTurn,
+    CynefinPlate: SBCynefinPlate,
+    FullArgument: SBFullArgument,
+    Chapter: WAChapter,
+    TwoFutures: WATwoFutures,
+    PostImage: PFPostImage,
+  },
 };
 
 // Map of slug -> custom layout
@@ -181,6 +196,7 @@ const postLayoutMap: Record<
   "progressive-agenda": ProgressiveAgendaLayout,
   "plane-never-flying": PlaneNeverFlyingLayout,
   "seven-bets": SevenBetsLayout,
+  "when-ai-does-our-work": WhenAiDoesOurWorkLayout,
 };
 
 // Drafts are deliberately absent: they render on demand, and only for the

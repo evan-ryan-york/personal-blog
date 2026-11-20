@@ -1,10 +1,12 @@
 import {
   Cormorant_Garamond,
+  Crimson_Pro,
   EB_Garamond,
   IBM_Plex_Mono,
   Instrument_Serif,
   Inter,
   Space_Mono,
+  Space_Grotesk,
   Spectral,
 } from "next/font/google";
 
@@ -93,6 +95,25 @@ export const inter = Inter({
   preload: false,
 });
 
+/* What Happens to Us When AI Does Our Work? — Crimson Pro, a classic
+   old-style book serif, for headings and reading; Space Grotesk for the small
+   labels. */
+export const crimsonPro = Crimson_Pro({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-crimson-pro",
+  display: "swap",
+  preload: false,
+});
+
+export const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+  preload: false,
+});
+
 export const sevenBetsFonts = `${cormorantGaramond.variable} ${ebGaramond.variable} ${spaceMono.variable}`;
 export const planeFonts = `${spectral.variable} ${ibmPlexMono.variable}`;
 export const progressiveAgendaFonts = `${instrumentSerif.variable} ${inter.variable}`;
+export const theaterFonts = `${crimsonPro.variable} ${spaceGrotesk.variable}`;

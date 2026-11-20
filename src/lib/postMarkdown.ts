@@ -1,5 +1,11 @@
 import type { Post } from "./posts";
 import { authorName, postUrl, siteName, siteUrl } from "./site";
+import {
+  FOOTNOTE,
+  LEGEND,
+  ROWS,
+  SEGMENT_NAMES,
+} from "../../content/posts/when-ai-does-our-work/components/futures";
 
 // Deliberately not imported from `./posts`: that module reads the filesystem
 // at import time, and two of the post layouts that render a "copy this post"
@@ -110,6 +116,33 @@ const wagers: Rule = (source) =>
     (_match, entries: string) =>
       [...entries.matchAll(/"([^"]*)"/g)].map(([, item]) => `- ${item}`).join("\n")
   );
+
+// <Chapter number>Title</Chapter> -> "## 01 · Title"
+const chapter: Rule = (source) =>
+  source.replace(
+    /<Chapter\s+number="([^"]*)">([\s\S]*?)<\/Chapter>/g,
+    (_match, number: string, title: string) => `## ${number} · ${tidy(title)}`
+  );
+
+// <TwoFutures caption /> is drawn in HTML from props-free data, so the strip
+// would leave nothing. Restate each bar as a line of shares.
+const twoFutures: Rule = (source) =>
+  source.replace(/<TwoFutures\b([^>]*)\/>/g, (_match, attrs: string) => {
+    const caption = attr(attrs, "caption");
+    const lines = caption ? [`**${caption}**`, ""] : [];
+    for (const row of ROWS) {
+      const shares = row.segments
+        .map((s) => `${SEGMENT_NAMES[s.kind]} ${s.share}%`)
+        .join(" · ");
+      lines.push(`**${row.eyebrow}: ${row.title}.** ${row.note}`, "", `- ${shares}`, "");
+    }
+    lines.push(
+      ...LEGEND.map((item) => `- **${SEGMENT_NAMES[item.kind]}** ${item.text}`),
+      "",
+      `*${FOOTNOTE}*`
+    );
+    return lines.join("\n").trim();
+  });
 
 /* --------------------------------------------------------------------------
  * The other three posts.
@@ -249,6 +282,9 @@ const RULES: Rule[] = [
   fullArgument,
   closing,
   wagers,
+  // when-ai-does-our-work
+  chapter,
+  twoFutures,
   // the-living-product, progressive-agenda, plane-never-flying
   flowStep,
   barrierCard,
