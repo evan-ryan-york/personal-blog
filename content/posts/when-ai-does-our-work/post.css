@@ -76,10 +76,6 @@
   transition: color 0.2s;
 }
 
-.wa-hero-file {
-  color: var(--hero-muted);
-}
-
 .wa-hero-text {
   position: relative;
   z-index: 10;
@@ -178,21 +174,6 @@
   color: var(--hero-ink);
 }
 
-/* The plate label, set like a figure number in the corner of the painting */
-.wa-hero-plate {
-  display: none;
-  position: absolute;
-  right: 2.5rem;
-  bottom: 2.25rem;
-  z-index: 10;
-  font-family: var(--sb-font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--hero-ink);
-  text-shadow: 0 1px 10px rgba(var(--wa-scrim, 14, 13, 11), 0.9);
-}
-
 .wa-hero-cue {
   position: absolute;
   bottom: 2rem;
@@ -249,10 +230,6 @@
 
   .wa-hero-bar {
     margin: 2rem 2.5rem 0;
-  }
-
-  .wa-hero-plate {
-    display: block;
   }
 }
 

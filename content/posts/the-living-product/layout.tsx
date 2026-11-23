@@ -60,8 +60,9 @@ export default function LivingProductLayout({
           }}
         />
         <div className="relative z-10 mx-auto" style={{ maxWidth: 820 }}>
-          <div
-            className="mb-8 opacity-0"
+          <Link
+            href="/posts/seven-bets#bet-a"
+            className="mb-8 inline-block opacity-0"
             style={{
               fontSize: "0.72rem",
               letterSpacing: "0.2em",
@@ -71,8 +72,8 @@ export default function LivingProductLayout({
               animation: "fadeUp 0.8s ease forwards 0.2s",
             }}
           >
-            A thesis on the future of software
-          </div>
+            Part of Seven Bets &middot; Bet A
+          </Link>
           <h1
             className="mb-7 opacity-0"
             style={{

@@ -80,9 +80,6 @@ export default function WhenAiDoesOurWorkLayout({
           <Link href="/" className="wa-hero-name">
             Ryan York
           </Link>
-          <span aria-hidden className="wa-hero-file">
-            Memorandum &middot; Bet B
-          </span>
         </div>
 
         <div className="wa-hero-text">
@@ -128,10 +125,6 @@ export default function WhenAiDoesOurWorkLayout({
             </div>
           </dl>
         </div>
-
-        <span aria-hidden className="wa-hero-plate">
-          Pl. I &mdash; The wave machine
-        </span>
 
         {/* Scroll cue */}
         <div
