@@ -30,7 +30,6 @@ const WA_TOKENS = {
   "--wa-ink": "#EFE9DF",
   "--wa-paper": "#10161B",
   "--wa-card": "#141B22",
-  "--wa-seg-workers": "#3F5A70",
   "--wa-seg-unsolved": "#222C35",
   "--wa-scrim": "7, 10, 13",
   "--wa-hero-accent": "#E2A35C",

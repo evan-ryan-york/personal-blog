@@ -1,11 +1,12 @@
 import type { Post } from "./posts";
 import { authorName, postUrl, siteName, siteUrl } from "./site";
 import {
+  AXIS_LABEL,
   FOOTNOTE,
-  LEGEND,
   ROWS,
-  SEGMENT_NAMES,
+  describeRow,
 } from "../../content/posts/when-ai-does-our-work/components/futures";
+import { CYNEFIN_BRIEF, briefLine } from "../../content/posts/seven-bets/components/cynefinBrief";
 
 // Deliberately not imported from `./posts`: that module reads the filesystem
 // at import time, and two of the post layouts that render a "copy this post"
@@ -66,9 +67,14 @@ const CYNEFIN_ROWS: [string, string, string][] = [
 
 const cynefinPlate: Rule = (source) =>
   source.replace(/<CynefinPlate\b([^>]*)\/>/g, (_match, attrs: string) => {
-    const rows = CYNEFIN_ROWS.map(
-      ([domain, example, implication]) =>
-        `- **${domain}.** Example: ${example} AI implication: ${implication}`
+    // `brief` is the short plate in "What Happens to Us When AI Does Our Work?"
+    const rows = (
+      /\bbrief\b/.test(attrs)
+        ? CYNEFIN_BRIEF.map((q) => `- **${q.title}.** ${briefLine(q)}`)
+        : CYNEFIN_ROWS.map(
+            ([domain, example, implication]) =>
+              `- **${domain}.** Example: ${example} AI implication: ${implication}`
+          )
     ).join("\n");
     const caption = attr(attrs, "caption");
     return caption ? `${rows}\n\n*${caption}*` : rows;
@@ -125,22 +131,17 @@ const chapter: Rule = (source) =>
   );
 
 // <TwoFutures caption /> is drawn in HTML from props-free data, so the strip
-// would leave nothing. Restate each bar as a line of shares.
+// would leave nothing. Restate what the bars stand for, then each row's
+// sentence and its shares in words.
 const twoFutures: Rule = (source) =>
   source.replace(/<TwoFutures\b([^>]*)\/>/g, (_match, attrs: string) => {
     const caption = attr(attrs, "caption");
     const lines = caption ? [`**${caption}**`, ""] : [];
+    lines.push(`*Each bar is ${AXIS_LABEL.toLowerCase()}, colored by who is working on each part.*`, "");
     for (const row of ROWS) {
-      const shares = row.segments
-        .map((s) => `${SEGMENT_NAMES[s.kind]} ${s.share}%`)
-        .join(" · ");
-      lines.push(`**${row.eyebrow}: ${row.title}.** ${row.note}`, "", `- ${shares}`, "");
+      lines.push(`- **${row.eyebrow}.** ${row.note} (${describeRow(row)})`);
     }
-    lines.push(
-      ...LEGEND.map((item) => `- **${SEGMENT_NAMES[item.kind]}** ${item.text}`),
-      "",
-      `*${FOOTNOTE}*`
-    );
+    lines.push("", `*${FOOTNOTE}*`);
     return lines.join("\n").trim();
   });
 

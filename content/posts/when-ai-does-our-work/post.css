@@ -399,20 +399,20 @@
   text-decoration: none;
 }
 
-/* --- Two futures: three bars of the world's valuable work ---
-   Narrow: each row's title stacks over its bar. From 720px: titles in a left
-   column. From 1100px: the figure breaks out of the column, with a bracket
-   over the bars and a name over every segment. Below that the legend
-   carries the colors. */
+/* --- Two futures: three bars of all the valuable problems ---
+   Color shows who is working on each part: people in gold, AI in off-white,
+   and the dark fill is what nobody is working on. Each segment names itself
+   once, inside or (when too narrow) just above. Narrow: each row's sentence
+   stacks over its bar. From 720px: sentences in a left column. From 1100px:
+   the figure breaks out of the column. */
 
 .wa-futures {
-  --seg-workers: var(--wa-seg-workers, #d9bb8c);
+  --seg-people: var(--sb-gold);
   --seg-ai: var(--wa-ink);
-  --seg-innovators: var(--sb-gold);
-  --seg-unsolved: var(--wa-seg-unsolved, #e3ddd0);
+  --seg-nobody: var(--wa-seg-unsolved, #e3ddd0);
   --label-col: 0px;
 
-  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 3.5vw, 2.25rem);
+  padding: clamp(1.25rem, 3.5vw, 2rem) clamp(1rem, 3.5vw, 2.25rem);
   background: var(--wa-card, #f9f7f2);
   border: 1px solid var(--sb-rule);
   font-family: var(--sb-font-mono);
@@ -424,27 +424,22 @@
   line-height: 1.15;
   letter-spacing: -0.015em;
   color: var(--sb-heading);
-  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
   text-wrap: balance;
-}
-
-/* The bracket: only meaningful beside the names, so wide screens only */
-.wa-futures-scale {
-  display: none;
 }
 
 .wa-futures-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
-  padding: 1.25rem 0;
+  gap: 0.625rem;
+  padding: 1rem 0;
 }
 
 .wa-futures-row-now {
   padding-top: 0;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--sb-rule);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .wa-futures-eyebrow {
@@ -453,43 +448,91 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--sb-dim);
-  margin-bottom: 0.375rem;
-}
-
-.wa-futures-row:nth-of-type(3) .wa-futures-eyebrow {
-  color: var(--sb-dim);
+  margin-bottom: 0.25rem;
 }
 
 .wa-futures-row:last-of-type .wa-futures-eyebrow {
   color: var(--sb-gold);
 }
 
-.sb-prose .wa-futures-row-title {
-  font-family: var(--sb-font-display);
-  font-size: clamp(1.25rem, 2.4vw, 1.5rem);
-  line-height: 1.2;
-  color: var(--sb-heading);
-  margin: 0;
-  text-wrap: balance;
-}
-
 .sb-prose .wa-futures-note {
   font-family: var(--sb-font-body);
-  font-size: 0.9375rem;
-  line-height: 1.45;
-  color: var(--sb-dim);
-  margin: 0.375rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--sb-heading);
+  margin: 0;
   text-wrap: pretty;
 }
 
-.wa-futures-names {
-  display: none;
+/* The axis over the first bar: a bracket spanning the whole bar */
+.wa-futures-axis {
+  position: relative;
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid var(--sb-fainter);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--sb-dim);
+}
+
+@media (max-width: 479px) {
+  .wa-futures-axis {
+    font-size: 0.5625rem;
+    letter-spacing: 0.06em;
+  }
+}
+
+.wa-futures-axis::before,
+.wa-futures-axis::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  width: 1px;
+  height: 6px;
+  background: var(--sb-fainter);
+}
+
+.wa-futures-axis::before {
+  left: 0;
+}
+
+.wa-futures-axis::after {
+  right: 0;
+}
+
+/* Names of segments too narrow to hold them, set just above the bar */
+.wa-futures-above {
+  position: relative;
+  height: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.wa-futures-above-label {
+  position: absolute;
+  bottom: 0;
+  padding-left: 0.375rem;
+  border-left: 1px solid currentColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wa-above-people {
+  color: var(--seg-people);
+}
+
+.wa-above-ai {
+  color: var(--seg-ai);
 }
 
 .wa-futures-bar {
   display: flex;
   gap: 3px;
-  height: clamp(2.75rem, 6vw, 3.5rem);
+  height: clamp(2.75rem, 6vw, 3.25rem);
 }
 
 .wa-seg {
@@ -497,10 +540,11 @@
   align-items: center;
   justify-content: center;
   min-width: 0;
-  font-size: clamp(0.6875rem, 1.6vw, 1rem);
+  padding: 0 0.375rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  line-height: 1.15;
+  text-align: center;
   overflow: hidden;
 }
 
@@ -512,10 +556,9 @@
   border-radius: 0 3px 3px 0;
 }
 
-.wa-seg-workers,
-.wa-seg-newInnovators {
-  background: var(--seg-workers);
-  color: var(--wa-ink);
+.wa-seg-people {
+  background: var(--seg-people);
+  color: var(--wa-paper);
 }
 
 .wa-seg-ai {
@@ -523,99 +566,58 @@
   color: var(--wa-paper);
 }
 
-.wa-seg-innovators {
-  background: var(--seg-innovators);
-  color: var(--wa-paper);
-}
-
-.wa-seg-unsolved {
-  background: var(--seg-unsolved);
+.wa-seg-nobody {
+  background: var(--seg-nobody);
   color: var(--sb-muted);
+  font-weight: 500;
 }
 
-/* New innovators: the same color as the workers they were, marked as moved */
-.wa-futures-bar .wa-seg-newInnovators,
-.wa-swatch.wa-seg-newInnovators {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(20, 19, 15, 0.09) 0 2px,
-      transparent 2px 7px
-    ),
-    var(--seg-workers);
-}
-
-/* Too thin on a phone to hold "5%"; the legend names it */
-@media (max-width: 719px) {
-  .wa-futures-bar .wa-seg-innovators {
-    font-size: 0;
-  }
-
-  .wa-futures {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-.wa-futures-legend {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 1.25rem 0 0;
-  border-top: 1px solid var(--sb-rule);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-  font-family: var(--sb-font-body);
-  font-size: 0.9375rem;
-  line-height: 1.4;
-  color: var(--sb-muted);
-}
-
-.wa-futures-legend li {
+/* Future A: the people let go, outside the bar. A faded, dashed outline in
+   the people color, under the AI that replaced them. */
+.wa-futures-letgo {
   display: flex;
+  align-items: center;
   gap: 0.625rem;
-  align-items: flex-start;
+  margin-top: 0.5rem;
 }
 
-.wa-futures-legend strong {
+.wa-futures-ghost {
+  flex-shrink: 0;
+  height: 1.5rem;
+  border: 1px dashed var(--seg-people);
+  border-radius: 3px;
+  background: rgba(226, 163, 92, 0.08);
+  opacity: 0.7;
+}
+
+.wa-futures-letgo-label {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--sb-heading);
-}
-
-.wa-swatch {
-  flex: none;
-  width: 0.8125rem;
-  height: 0.8125rem;
-  border-radius: 2px;
-  margin-top: 0.2rem;
+  color: var(--seg-people);
+  opacity: 0.85;
+  white-space: nowrap;
 }
 
 .sb-prose .wa-futures-footnote {
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--sb-dim);
-  margin: 1.25rem 0 0;
+  margin: 0.75rem 0 0;
 }
 
 @media (min-width: 720px) {
   .wa-futures {
-    --label-col: 30%;
+    --label-col: 34%;
   }
 
   .wa-futures-row {
     grid-template-columns: var(--label-col) 1fr;
     gap: clamp(1.25rem, 3vw, 2rem);
-    align-items: end;
-  }
-
-  .wa-futures-legend {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 2rem;
+    align-items: center;
   }
 }
 
-/* Wide enough to break out of the column: the figure widens, and there is
-   room for the bracket and a name over every segment. */
+/* Wide enough to break out of the column */
 @media (min-width: 1100px) {
   .sb-prose .wa-futures {
     width: min(1040px, calc(100vw - 6rem));
@@ -624,65 +626,7 @@
   }
 
   .wa-futures {
-    --label-col: 28%;
-  }
-
-  .wa-futures-scale {
-    display: flex;
-    gap: 3px;
-    margin-left: calc(var(--label-col) + clamp(1.25rem, 3vw, 2rem));
-    margin-bottom: 1rem;
-  }
-
-  .wa-futures-bracket {
-    min-width: 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--sb-fainter);
-    position: relative;
-    font-size: 0.625rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--sb-dim);
-    white-space: nowrap;
-  }
-
-  .wa-futures-bracket::before,
-  .wa-futures-bracket::after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    width: 1px;
-    height: 6px;
-    background: var(--sb-fainter);
-  }
-
-  .wa-futures-bracket::before {
-    left: 0;
-  }
-
-  .wa-futures-bracket::after {
-    right: 0;
-  }
-
-  .wa-futures-names {
-    display: flex;
-    gap: 3px;
-    margin-bottom: 0.5rem;
-  }
-
-  .wa-futures-names span {
-    min-width: 0;
-    text-align: center;
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: var(--sb-muted);
-    white-space: nowrap;
-    overflow: visible;
-  }
-
-  .wa-futures-legend {
-    grid-template-columns: 1fr 1fr 1fr;
+    --label-col: 30%;
   }
 }
 

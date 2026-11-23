@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import ScrollReveal from "./ScrollReveal";
+import { CYNEFIN_BRIEF, briefLine, type BriefQuadrant } from "./cynefinBrief";
 
 // The Cynefin plate, drawn rather than shipped as art. Same engraved-plate
 // vocabulary as the rest of the post — near-black ground, brass rules, warm
@@ -164,7 +165,8 @@ function hairline(
 function layout(
   ctx: CanvasRenderingContext2D,
   width: number,
-  paint: boolean
+  paint: boolean,
+  brief: boolean
 ): number {
   const s = Math.min(Math.max(width / 900, 0.6), 1.1);
   const stacked = width < STACK_BELOW;
@@ -213,6 +215,11 @@ function layout(
 
   const gridTop = y;
   y += Math.max(28, 42 * s);
+
+  if (brief) {
+    y = layoutBrief(ctx, { s, stacked, contentX, contentW, colW, gutter, quadSize, bodySize, bodyLead, gridTop, y }, paint);
+    return y + pad;
+  }
 
   // --- Quadrants -----------------------------------------------------------
   const quadrantHeight = (quad: Quadrant): number => {
@@ -338,14 +345,131 @@ function layout(
   return y + pad;
 }
 
-function render(canvas: HTMLCanvasElement, width: number) {
+type Frame = {
+  s: number;
+  stacked: boolean;
+  contentX: number;
+  contentW: number;
+  colW: number;
+  gutter: number;
+  quadSize: number;
+  bodySize: number;
+  bodyLead: number;
+  gridTop: number;
+  y: number;
+};
+
+/**
+ * The short plate: title, one description line, an optional "e.g." in
+ * italics, and the AI line in gold, set apart at the bottom. Within a row the
+ * AI lines start at the same height, so the four verdicts read across.
+ */
+function layoutBrief(
+  ctx: CanvasRenderingContext2D,
+  f: Frame,
+  paint: boolean
+): number {
+  const { s, stacked, contentX, contentW, colW, gutter, quadSize, bodySize, bodyLead } = f;
+  const bodyFont = `400 ${bodySize}px ${F.body}`;
+  const exampleFont = `italic 400 ${bodySize}px ${F.body}`;
+  const titleGap = 12 * s;
+  const exampleGap = 8 * s;
+  const aiGap = Math.max(16, 22 * s);
+
+  const linesOf = (font: string, text: string) => {
+    ctx.font = font;
+    return wrap(ctx, text, colW);
+  };
+  const example = (q: BriefQuadrant) => (q.example ? `e.g. ${q.example}` : "");
+  const ai = (q: BriefQuadrant) => `AI: ${q.ai}`;
+
+  const upperHeight = (q: BriefQuadrant) =>
+    quadSize +
+    titleGap +
+    linesOf(bodyFont, q.body).length * bodyLead +
+    (q.example ? exampleGap + linesOf(exampleFont, example(q)).length * bodyLead : 0);
+  const aiHeight = (q: BriefQuadrant) => linesOf(bodyFont, ai(q)).length * bodyLead;
+
+  const drawLines = (font: string, color: string, text: string, x: number, top: number) => {
+    ctx.font = font;
+    ctx.fillStyle = color;
+    let cursor = top;
+    for (const line of wrap(ctx, text, colW)) {
+      ctx.fillText(line, x, cursor + bodySize);
+      cursor += bodyLead;
+    }
+    return cursor;
+  };
+
+  const drawUpper = (q: BriefQuadrant, x: number, top: number) => {
+    ctx.fillStyle = C.heading;
+    ctx.font = `300 ${quadSize}px ${F.display}`;
+    ctx.fillText(q.title, x, top + quadSize * 0.78);
+    let cursor = drawLines(bodyFont, C.body, q.body, x, top + quadSize + titleGap);
+    if (q.example) {
+      cursor = drawLines(exampleFont, C.body, example(q), x, cursor + exampleGap);
+    }
+    return cursor;
+  };
+
+  const drawAi = (q: BriefQuadrant, x: number, top: number) =>
+    drawLines(bodyFont, C.gold, ai(q), x, top);
+
+  let y = f.y;
+  const rowGap = stacked ? Math.max(32, 40 * s) : Math.max(24, 32 * s);
+
+  if (stacked) {
+    CYNEFIN_BRIEF.forEach((q, i) => {
+      if (i > 0 && paint) {
+        hairline(ctx, contentX, y - rowGap / 2, contentX + contentW, y - rowGap / 2, C.divider);
+      }
+      const upper = upperHeight(q);
+      if (paint) {
+        drawUpper(q, contentX, y);
+        drawAi(q, contentX, y + upper + aiGap);
+      }
+      y += upper + aiGap + aiHeight(q) + rowGap;
+    });
+    return y - rowGap;
+  }
+
+  const colX = [contentX, contentX + colW + gutter * 2];
+  const rows: [BriefQuadrant, BriefQuadrant][] = [
+    [CYNEFIN_BRIEF[0], CYNEFIN_BRIEF[1]],
+    [CYNEFIN_BRIEF[2], CYNEFIN_BRIEF[3]],
+  ];
+
+  rows.forEach((row, rowIndex) => {
+    if (rowIndex > 0 && paint) {
+      hairline(ctx, contentX, y - rowGap, contentX + contentW, y - rowGap, C.divider);
+    }
+    const upper = Math.max(...row.map(upperHeight));
+    const aiTop = y + upper + aiGap;
+    if (paint) {
+      row.forEach((q, i) => {
+        drawUpper(q, colX[i], y);
+        drawAi(q, colX[i], aiTop);
+      });
+    }
+    y = aiTop + Math.max(...row.map(aiHeight)) + rowGap * 2;
+  });
+  y -= rowGap * 2;
+
+  if (paint) {
+    const midX = contentX + colW + gutter;
+    hairline(ctx, midX, f.gridTop, midX, y, C.divider);
+  }
+  return y;
+}
+
+function render(canvas: HTMLCanvasElement, width: number, brief: boolean) {
   readPalette(canvas);
   readFonts(canvas);
   const measure = document.createElement("canvas").getContext("2d");
   const ctx = canvas.getContext("2d");
   if (!measure || !ctx) return;
 
-  const height = layout(measure, width, false);
+  const height = layout(measure, width, false, brief);
   const dpr = window.devicePixelRatio || 1;
 
   canvas.width = Math.round(width * dpr);
@@ -363,18 +487,26 @@ function render(canvas: HTMLCanvasElement, width: number) {
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  layout(ctx, width, true);
+  layout(ctx, width, true, brief);
 }
 
-export default function CynefinPlate({ caption }: { caption?: string }) {
+// `brief` draws the short plate (see cynefinBrief.ts); Seven Bets keeps the
+// full one with its labels.
+export default function CynefinPlate({
+  caption,
+  brief = false,
+}: {
+  caption?: string;
+  brief?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const widthRef = useRef(0);
 
   const paint = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || widthRef.current === 0) return;
-    render(canvas, widthRef.current);
-  }, []);
+    render(canvas, widthRef.current, brief);
+  }, [brief]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -397,6 +529,7 @@ export default function CynefinPlate({ caption }: { caption?: string }) {
       document.fonts.load(`400 52px ${F.display}`),
       document.fonts.load(`300 38px ${F.display}`),
       document.fonts.load(`400 19px ${F.body}`),
+      document.fonts.load(`italic 400 19px ${F.body}`),
       document.fonts.load(`400 11px ${F.mono}`),
     ])
       .then(paint)
@@ -407,9 +540,12 @@ export default function CynefinPlate({ caption }: { caption?: string }) {
 
   const description =
     "The Cynefin framework in four quadrants. " +
-    QUADRANTS.map(
-      (q) =>
-        `${q.title}: ${q.body} Example: ${q.example} AI implication: ${q.implication}.`
+    (brief
+      ? CYNEFIN_BRIEF.map((q) => `${q.title}: ${briefLine(q)}`)
+      : QUADRANTS.map(
+          (q) =>
+            `${q.title}: ${q.body} Example: ${q.example} AI implication: ${q.implication}.`
+        )
     ).join(" ");
 
   return (

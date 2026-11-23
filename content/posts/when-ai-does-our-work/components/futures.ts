@@ -1,67 +1,81 @@
 // The data for <TwoFutures />. Shared with `src/lib/postMarkdown.ts`, which
 // restates the figure as text in the post's Markdown version.
 //
-// Each row is the whole of the world's valuable work as one bar. The first
-// fifth is established work, with known solutions; the rest is new and
-// unknown problems. The shares are illustrative, not measured.
+// Each bar is all the valuable problems we could be working on. Color shows
+// who is working on each part; the dark part is what nobody is working on.
+// The reader only has to compare the dark part across the three rows. The
+// shares set the widths but are never printed: they're illustrative.
 
-export type SegmentKind = "workers" | "ai" | "innovators" | "newInnovators" | "unsolved";
+export type SegmentKind = "people" | "ai" | "nobody";
 
 export const SEGMENT_NAMES: Record<SegmentKind, string> = {
-  workers: "Knowledge workers",
+  people: "People",
   ai: "AI",
-  innovators: "Innovators",
-  newInnovators: "New innovators",
-  unsolved: "Unsolved problems",
+  nobody: "Nobody is working on this",
 };
 
 export type FutureRow = {
   eyebrow: string;
-  title: string;
   note: string;
   segments: { kind: SegmentKind; share: number }[];
+  /** People removed from the bar, drawn as a ghost under its first segment. */
+  letGo?: number;
 };
+
+export const AXIS_LABEL = "All the valuable problems we could be working on";
+export const LET_GO_LABEL = "People let go";
 
 export const ROWS: FutureRow[] = [
   {
     eyebrow: "Today",
-    title: "People do the established work",
-    note: "Most valuable problems go untouched.",
+    note: "People do the work we already know how to do. Most valuable problems go untouched.",
     segments: [
-      { kind: "workers", share: 20 },
-      { kind: "innovators", share: 5 },
-      { kind: "unsolved", share: 75 },
+      { kind: "people", share: 25 },
+      { kind: "nobody", share: 75 },
     ],
   },
   {
     eyebrow: "Future A · Efficiency",
-    title: "Mass unemployment",
-    note: "AI does the established work. The people who did it are let go, and the savings pool with whoever owns the technology.",
+    note: "AI does that work. The people who did it are let go, and the same problems go untouched.",
     segments: [
       { kind: "ai", share: 20 },
-      { kind: "innovators", share: 5 },
-      { kind: "unsolved", share: 75 },
+      { kind: "people", share: 5 },
+      { kind: "nobody", share: 75 },
     ],
+    letGo: 20,
   },
   {
     eyebrow: "Future B · Capacity",
-    title: "More people tackling unsolved problems",
-    note: "AI does the established work. The savings are reinvested in the same people, trained and paid to take on what nobody had time for.",
+    note: "AI does that work. The same people are paid to take on problems nobody had time for.",
     segments: [
       { kind: "ai", share: 20 },
-      { kind: "innovators", share: 5 },
-      { kind: "newInnovators", share: 20 },
-      { kind: "unsolved", share: 55 },
+      { kind: "people", share: 25 },
+      { kind: "nobody", share: 55 },
     ],
   },
 ];
 
-export const LEGEND: { kind: SegmentKind; text: string }[] = [
-  { kind: "workers", text: "perform work within established solutions." },
-  { kind: "innovators", text: "tackle new and unknown problems." },
-  { kind: "newInnovators", text: "are those same workers, redirected to problem-solving." },
-  { kind: "ai", text: "takes over the established work in both futures." },
-  { kind: "unsolved", text: "are valuable problems nobody is working on." },
-];
+export const FOOTNOTE = "Illustrative, not a forecast.";
 
-export const FOOTNOTE = "Illustrative scenarios, not measured workforce shares or a forecast.";
+// The bars carry no numbers, so their text alternatives describe the shares
+// in words.
+const SHARE_WORDS: Record<number, string> = {
+  5: "a sliver",
+  20: "a fifth",
+  25: "a quarter",
+  55: "just over half",
+  75: "three quarters",
+};
+
+export function shareInWords(share: number): string {
+  return SHARE_WORDS[share] ?? `${share} percent`;
+}
+
+/** One row's bar, in words: "People, a quarter; Nobody is working on this, three quarters." */
+export function describeRow(row: FutureRow): string {
+  const parts = row.segments
+    .map((s) => `${SEGMENT_NAMES[s.kind]}, ${shareInWords(s.share)}`)
+    .join("; ");
+  const letGo = row.letGo ? ` ${LET_GO_LABEL}: ${shareInWords(row.letGo)}.` : "";
+  return `${parts}.${letGo}`;
+}
