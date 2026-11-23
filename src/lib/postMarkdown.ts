@@ -144,6 +144,47 @@ const twoFutures: Rule = (source) =>
     return lines.join("\n").trim();
   });
 
+// Act VI's rehearsal (components/Coaching.tsx). The beats and cards carry
+// their labels in props, so each one gets restated here; the wrappers
+// (Rehearsal, Clinics, Options, Spec, Loop, Outcomes) fall to stripComponents.
+const coaching: Rule = (source) =>
+  source
+    .replace(/<Beat\b([^>]*)>/g, (_match, attrs: string) => {
+      const kicker = attr(attrs, "kicker");
+      const title = attr(attrs, "title");
+      return `### ${attr(attrs, "n")} · ${kicker ? `${kicker}: ` : ""}${title}`;
+    })
+    .replace(/<\/Beat>/g, "")
+    .replace(
+      /<Line\b([^>]*)>([\s\S]*?)<\/Line>/g,
+      (_match, attrs: string, text: string) => `> **${attr(attrs, "who")}:** ${tidy(text)}`
+    )
+    .replace(/<Clinic\b([^>]*?)\/>/g, (_match, attrs: string) =>
+      `- **${attr(attrs, "name")}.** Can afford: ${attr(attrs, "can")}. Can't afford: ${attr(attrs, "cant")}.`
+    )
+    .replace(
+      /<Note\b([^>]*)>([\s\S]*?)<\/Note>/g,
+      (_match, attrs: string, text: string) => `*${attr(attrs, "label")}:* ${tidy(text)}`
+    )
+    .replace(
+      /<Option\b([^>]*)>([\s\S]*?)<\/Option>/g,
+      (_match, attrs: string, text: string) =>
+        /\bpicked\b/.test(attrs) ? `- **${tidy(text)}** (her pick)` : `- ${tidy(text)}`
+    )
+    .replace(
+      /<Question\b([^>]*)>([\s\S]*?)<\/Question>/g,
+      (_match, attrs: string, text: string) => `**${attr(attrs, "label")}:** *${tidy(text)}*`
+    )
+    .replace(
+      /<SpecItem\b([^>]*)>([\s\S]*?)<\/SpecItem>/g,
+      (_match, attrs: string, text: string) => `- **${attr(attrs, "label")}:** ${tidy(text)}`
+    )
+    .replace(/<LoopStep>([\s\S]*?)<\/LoopStep>/g, (_match, text: string) => `1. ${tidy(text)}`)
+    .replace(
+      /<Outcome\b([^>]*)>([\s\S]*?)<\/Outcome>/g,
+      (_match, attrs: string, text: string) => `- **${attr(attrs, "when")}:** ${tidy(text)}`
+    );
+
 /* --------------------------------------------------------------------------
  * The other three posts.
  *
@@ -285,6 +326,7 @@ const RULES: Rule[] = [
   // when-ai-does-our-work
   chapter,
   twoFutures,
+  coaching,
   // the-living-product, progressive-agenda, plane-never-flying
   flowStep,
   barrierCard,

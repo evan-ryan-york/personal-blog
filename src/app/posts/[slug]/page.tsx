@@ -101,6 +101,7 @@ import SBWhyItMatters, {
 import WhenAiDoesOurWorkLayout from "../../../../content/posts/when-ai-does-our-work/layout";
 import WAChapter from "../../../../content/posts/when-ai-does-our-work/components/Chapter";
 import WATwoFutures from "../../../../content/posts/when-ai-does-our-work/components/TwoFutures";
+import * as WACoaching from "../../../../content/posts/when-ai-does-our-work/components/Coaching";
 
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
@@ -179,6 +180,7 @@ const postComponentsMap: Record<string, Record<string, AnyComponent>> = {
     FullArgument: SBFullArgument,
     Chapter: WAChapter,
     TwoFutures: WATwoFutures,
+    ...WACoaching,
     PostImage: PFPostImage,
   },
 };
