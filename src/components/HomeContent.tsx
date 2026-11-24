@@ -158,10 +158,10 @@ export default function HomeContent({
                   href={`/posts/${post.slug}`}
                   className="group flex overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
                 >
-                  {post.frontmatter.ogImage && (
+                  {(post.frontmatter.cardImage ?? post.frontmatter.ogImage) && (
                     <div className="relative w-40 shrink-0 overflow-hidden md:w-56">
                       <img
-                        src={post.frontmatter.ogImage}
+                        src={post.frontmatter.cardImage ?? post.frontmatter.ogImage}
                         alt={post.frontmatter.title}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />

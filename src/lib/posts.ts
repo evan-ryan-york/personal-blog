@@ -30,6 +30,12 @@ export interface PostQuery {
 export interface PostFrontmatter {
   title: string;
   description: string;
+  /**
+   * A shorter description for search results and social cards, when the
+   * subtitle runs past the ~155 characters a search snippet shows. Falls
+   * back to `description`, which stays the subtitle on the page.
+   */
+  seoDescription?: string;
   date: string;
   /**
    * When the post was last meaningfully revised. Absent until a post is
@@ -40,6 +46,12 @@ export interface PostFrontmatter {
   updated?: string;
   tags: string[];
   ogImage?: string;
+  /**
+   * The thumbnail on the home page, when it shouldn't be the social card —
+   * say, because the card has the title set on it, which a narrow crop
+   * would slice through. Falls back to `ogImage`.
+   */
+  cardImage?: string;
   layout?: "custom";
   status?: PostStatus;
   /** Short summary bullets, shown above the post and included in its Markdown. */

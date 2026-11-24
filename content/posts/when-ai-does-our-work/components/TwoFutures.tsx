@@ -84,8 +84,9 @@ export default function TwoFutures({ caption }: { caption?: string }) {
 
                 {row.letGo ? (
                   <div aria-hidden className="wa-futures-letgo">
-                    <span className="wa-futures-ghost" style={{ flexBasis: `${row.letGo}%` }} />
-                    <span className="wa-futures-letgo-label">{LET_GO_LABEL}</span>
+                    <span className="wa-futures-ghost" style={{ flexBasis: `${row.letGo}%` }}>
+                      {LET_GO_LABEL}
+                    </span>
                   </div>
                 ) : null}
               </div>

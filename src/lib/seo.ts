@@ -36,11 +36,13 @@ const siteOgImage = `${siteUrl}/api/og?title=${encodeURIComponent(siteName)}`;
 
 export function generatePostMetadata(post: Post): Metadata {
   const ogImageUrl = ogImageFor(post);
+  const description =
+    post.frontmatter.seoDescription ?? post.frontmatter.description;
   const url = postUrl(post.slug);
 
   return {
     title: post.frontmatter.title,
-    description: post.frontmatter.description,
+    description,
     keywords: post.frontmatter.tags,
     authors: [{ name: authorName, url: siteUrl }],
     alternates: {
@@ -55,7 +57,7 @@ export function generatePostMetadata(post: Post): Metadata {
     openGraph: {
       type: "article",
       title: post.frontmatter.title,
-      description: post.frontmatter.description,
+      description,
       url,
       siteName,
       locale: "en_US",
@@ -75,7 +77,7 @@ export function generatePostMetadata(post: Post): Metadata {
     twitter: {
       card: "summary_large_image",
       title: post.frontmatter.title,
-      description: post.frontmatter.description,
+      description,
       creator: "@evan_ryan_york",
       images: [ogImageUrl],
     },
