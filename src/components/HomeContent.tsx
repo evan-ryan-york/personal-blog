@@ -156,10 +156,12 @@ export default function HomeContent({
                 <Link
                   key={post.slug}
                   href={`/posts/${post.slug}`}
-                  className="group flex overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
+                  // Fixed height so every card matches, whatever the length of
+                  // its title and description; the text is clamped to fit.
+                  className="group flex h-52 overflow-hidden rounded-xl border border-paper-warm transition-shadow hover:shadow-lg"
                 >
                   {(post.frontmatter.cardImage ?? post.frontmatter.ogImage) && (
-                    <div className="relative w-40 shrink-0 overflow-hidden md:w-56">
+                    <div className="relative w-28 shrink-0 overflow-hidden sm:w-40 md:w-56">
                       <img
                         src={post.frontmatter.cardImage ?? post.frontmatter.ogImage}
                         alt={post.frontmatter.title}
@@ -173,7 +175,7 @@ export default function HomeContent({
                       )}
                     </div>
                   )}
-                  <article className="flex flex-col justify-center p-5">
+                  <article className="flex min-w-0 flex-col justify-center p-4 md:p-5">
                     <div
                       className="mb-2 flex items-center gap-3 text-xs uppercase tracking-widest text-muted"
                       style={{ fontFamily: "var(--font-mono)" }}
@@ -194,11 +196,12 @@ export default function HomeContent({
                           },
                         )}
                       </time>
-                      <span className="text-paper-warm">/</span>
-                      <span>{post.readingTime}</span>
+                      {/* Too wide beside the date on a phone */}
+                      <span className="hidden text-paper-warm sm:inline">/</span>
+                      <span className="hidden sm:inline">{post.readingTime}</span>
                     </div>
                     <h3
-                      className="mb-2 text-xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent md:text-2xl"
+                      className="mb-2 line-clamp-3 text-lg font-bold tracking-tight text-ink transition-colors group-hover:text-accent sm:text-xl md:line-clamp-2 md:text-2xl"
                       style={{
                         fontFamily: "var(--font-display)",
                         letterSpacing: "-0.02em",
@@ -207,11 +210,13 @@ export default function HomeContent({
                     >
                       {post.frontmatter.title}
                     </h3>
+                    {/* The short SEO description when a post has one: the
+                        card only has room for a few lines. */}
                     <p
-                      className="text-sm text-muted"
+                      className="line-clamp-2 text-sm text-muted md:line-clamp-3"
                       style={{ lineHeight: 1.6 }}
                     >
-                      {post.frontmatter.description}
+                      {post.frontmatter.seoDescription ?? post.frontmatter.description}
                     </p>
                   </article>
                 </Link>
